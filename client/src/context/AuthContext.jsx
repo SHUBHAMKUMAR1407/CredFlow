@@ -37,8 +37,11 @@ export function AuthProvider({ children }) {
   };
 
   const updateUserData = (data) => {
-    setUser(data);
-    localStorage.setItem('credflow_user', JSON.stringify(data));
+    setUser(prev => {
+      const updated = { ...prev, ...data };
+      localStorage.setItem('credflow_user', JSON.stringify(updated));
+      return updated;
+    });
   };
 
   return (

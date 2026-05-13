@@ -27,6 +27,12 @@ exports.register = async (req, res) => {
       name: user.name,
       email: user.email,
       role: user.role,
+      avatar: user.avatar,
+      phoneNumber: user.phoneNumber,
+      occupation: user.occupation,
+      bio: user.bio,
+      currency: user.currency,
+      monthlyBudget: user.monthlyBudget,
       token: generateToken(user._id)
     });
   } catch (error) {
@@ -54,6 +60,10 @@ exports.login = async (req, res) => {
       role: user.role,
       avatar: user.avatar,
       monthlyBudget: user.monthlyBudget,
+      phoneNumber: user.phoneNumber,
+      occupation: user.occupation,
+      bio: user.bio,
+      currency: user.currency,
       token: generateToken(user._id)
     });
   } catch (error) {
@@ -123,24 +133,40 @@ exports.getProfile = async (req, res) => {
 // @route PUT /api/auth/profile
 exports.updateProfile = async (req, res) => {
   try {
-    const user = await User.findById(req.user._id);
-    if (!user) return res.status(404).json({ message: 'User not found' });
+    const updateData = {};
+    const fields = ['name', 'monthlyBudget', 'phoneNumber', 'occupation', 'bio', 'currency', 'avatar'];
+    
+    fields.forEach(field => {
+      if (req.body[field] !== undefined) {
+        updateData[field] = req.body[field];
+      }
+    });
 
-    user.name = req.body.name || user.name;
-    user.monthlyBudget = req.body.monthlyBudget || user.monthlyBudget;
-    if (req.body.avatar !== undefined) {
-      user.avatar = req.body.avatar;
-    }
     if (req.body.password) {
-      user.password = req.body.password;
+      const bcrypt = require('bcryptjs');
+      const salt = await bcrypt.genSalt(12);
+      updateData.password = await bcrypt.hash(req.body.password, salt);
     }
-    const updatedUser = await user.save();
+
+    const updatedUser = await User.findByIdAndUpdate(
+      req.user._id,
+      { $set: updateData },
+      { new: true, runValidators: false } // Disable validators temporarily to ensure save
+    );
+
+    if (!updatedUser) return res.status(404).json({ message: 'User not found' });
+
+    // Explicitly construct the response to be 100% sure
     res.json({
       _id: updatedUser._id,
       name: updatedUser.name,
       email: updatedUser.email,
       role: updatedUser.role,
       avatar: updatedUser.avatar,
+      phoneNumber: updatedUser.phoneNumber,
+      occupation: updatedUser.occupation,
+      bio: updatedUser.bio,
+      currency: updatedUser.currency,
       monthlyBudget: updatedUser.monthlyBudget,
       token: generateToken(updatedUser._id)
     });

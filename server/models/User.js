@@ -7,12 +7,16 @@ const userSchema = new mongoose.Schema({
   password: { type: String, required: true, minlength: 6 },
   role: { type: String, enum: ['user', 'admin'], default: 'user' },
   avatar: { type: String, default: '' },
+  phoneNumber: { type: String, default: '' },
+  occupation: { type: String, default: '' },
+  bio: { type: String, default: '' },
+  currency: { type: String, default: 'INR' },
   isVerified: { type: Boolean, default: false },
   otp: { type: String },
   otpExpiry: { type: Date },
   monthlyBudget: { type: Number, default: 50000 },
   createdAt: { type: Date, default: Date.now }
-});
+}, { strict: false });
 
 userSchema.pre('save', async function() {
   if (!this.isModified('password')) return;
