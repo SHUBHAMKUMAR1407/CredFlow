@@ -1,9 +1,10 @@
 import { getScoreCategory } from '../../utils/creditScoreUtils';
 
 export default function CreditScoreGauge({ score }) {
-  const currentScore = score?.score || 300;
+  const currentScore = score?.score ?? 0;
+  const isNewUser = currentScore === 0;
   const category = getScoreCategory(currentScore);
-  const percentage = ((currentScore - 300) / 550) * 100;
+  const percentage = isNewUser ? 0 : ((currentScore - 300) / 550) * 100;
 
   // SVG arc calculation (simplified gauge)
   const radius = 80;
@@ -16,7 +17,9 @@ export default function CreditScoreGauge({ score }) {
       <div className="credit-gauge">
         <svg viewBox="0 0 200 120">
           <path d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="var(--bg-tertiary)" strokeWidth="16" strokeLinecap="round" />
-          <path d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke={`url(#gradient-${category.label})`} strokeWidth="16" strokeLinecap="round" strokeDasharray={circumference} strokeDashoffset={strokeDashoffset} style={{ transition: 'stroke-dashoffset 1.5s ease-out' }} />
+          {!isNewUser && (
+            <path d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke={`url(#gradient-${category.label})`} strokeWidth="16" strokeLinecap="round" strokeDasharray={circumference} strokeDashoffset={strokeDashoffset} style={{ transition: 'stroke-dashoffset 1.5s ease-out' }} />
+          )}
           <defs>
             <linearGradient id="gradient-Excellent" x1="0%" y1="0%" x2="100%" y2="0%">
               <stop offset="0%" stopColor="#3b82f6" />
@@ -37,12 +40,21 @@ export default function CreditScoreGauge({ score }) {
           </defs>
         </svg>
         <div className="credit-score-value">
-          <div className="score-num" style={{ color: category.color }}>{currentScore}</div>
-          <div className="score-label">{category.label}</div>
+          {isNewUser ? (
+            <>
+              <div className="score-num" style={{ color: '#94a3b8', fontSize: '2rem' }}>N/A</div>
+              <div className="score-label" style={{ color: '#94a3b8' }}>No Data Yet</div>
+            </>
+          ) : (
+            <>
+              <div className="score-num" style={{ color: category.color }}>{currentScore}</div>
+              <div className="score-label">{category.label}</div>
+            </>
+          )}
         </div>
       </div>
       <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginTop: 16 }}>
-        {score?.suggestions?.[0] || 'Analyzing your financial behavior...'}
+        {score?.suggestions?.[0] || (isNewUser ? 'Add your first transaction to start building your credit score!' : 'Analyzing your financial behavior...')}
       </p>
     </div>
   );
