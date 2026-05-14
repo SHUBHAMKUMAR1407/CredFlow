@@ -70,9 +70,7 @@ export default function LoginPage() {
             <Link to="/forgot-password">Forgot password?</Link>
             <Link to="/signup">Create account</Link>
           </div>
-          <div className="auth-divider" style={{ marginTop: 20 }}>
-            <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Demo: demo@credflow.com / demo123</span>
-          </div>
+
         </div>
       </div>
     </div>

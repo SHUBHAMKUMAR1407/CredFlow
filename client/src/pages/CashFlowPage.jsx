@@ -31,8 +31,8 @@ export default function CashFlowPage() {
   const barData = {
     labels,
     datasets: [
-      { label: 'Income', data: data.map(d => d.income), backgroundColor: '#10b981', borderRadius: 4 },
-      { label: 'Expense', data: data.map(d => d.expense), backgroundColor: '#ef4444', borderRadius: 4 }
+      { label: 'Income', data: data.map(d => d.income), backgroundColor: '#00acc1', borderRadius: 6 },
+      { label: 'Expense', data: data.map(d => d.expense), backgroundColor: '#fb8c00', borderRadius: 6 }
     ]
   };
 

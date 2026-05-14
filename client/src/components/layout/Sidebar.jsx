@@ -142,7 +142,11 @@ export default function Sidebar({ collapsed, setCollapsed }) {
               user?.name?.charAt(0)?.toUpperCase()
             )}
           </div>
-          {!collapsed && (
+          {collapsed ? (
+            <button className="sidebar-toggle" onClick={handleLogout} title="Logout" style={{ margin: 0, padding: '8px' }}>
+              <LogOut size={20} style={{ color: 'var(--danger)' }} />
+            </button>
+          ) : (
             <>
               <div className="user-info">
                 <div className="user-name">{user?.name}</div>
@@ -213,13 +217,13 @@ export default function Sidebar({ collapsed, setCollapsed }) {
                               formData.name?.charAt(0)?.toUpperCase()
                             )}
                           </div>
-                          <label htmlFor="avatar-upload" style={{ position: 'absolute', bottom: -5, right: -5, width: 34, height: 34, background: 'var(--accent)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', border: '3px solid var(--bg-secondary)', color: 'white', transition: 'var(--transition)' }} className="btn-hover-scale">
-                            {uploading ? <Loader2 size={16} className="animate-spin" /> : <Camera size={18} />}
+                          <label htmlFor="avatar-upload" style={{ position: 'absolute', bottom: -5, right: -5, width: 32, height: 32, background: 'var(--accent)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', border: '3px solid var(--bg-secondary)', color: 'white', transition: 'var(--transition)' }} className="btn-hover-scale">
+                            {uploading ? <Loader2 size={16} className="animate-spin" /> : <Camera size={16} />}
                             <input id="avatar-upload" type="file" accept="image/*" style={{ display: 'none' }} onChange={handleAvatarChange} disabled={uploading} />
                           </label>
                           {formData.avatar && (
-                            <button type="button" onClick={() => setFormData({ ...formData, avatar: '' })} style={{ position: 'absolute', bottom: -5, left: -5, width: 28, height: 28, background: 'var(--danger)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', border: '3px solid var(--bg-secondary)', color: 'white', padding: 0 }} title="Remove Photo">
-                              <Trash2 size={14} />
+                            <button type="button" onClick={() => setFormData({ ...formData, avatar: '' })} style={{ position: 'absolute', bottom: -5, left: -5, width: 32, height: 32, background: 'var(--danger)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', border: '3px solid var(--bg-secondary)', color: 'white', padding: 0 }} title="Remove Photo">
+                              <Trash2 size={16} />
                             </button>
                           )}
                         </div>

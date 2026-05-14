@@ -10,10 +10,10 @@
   --accent: #6366f1;
   --accent-hover: #818cf8;
   --accent2: #8b5cf6;
-  --success: #10b981;
-  --success-bg: rgba(16, 185, 129, 0.12);
-  --danger: #ef4444;
-  --danger-bg: rgba(239, 68, 68, 0.12);
+  --success: #00acc1;
+  --success-bg: rgba(0, 172, 193, 0.15);
+  --danger: #fb8c00;
+  --danger-bg: rgba(251, 140, 0, 0.15);
   --warning: #f59e0b;
   --warning-bg: rgba(245, 158, 11, 0.12);
   --info: #3b82f6;
@@ -260,10 +260,31 @@ a {
 }
 
 .btn-icon {
-  width: 36px;
-  height: 36px;
+  width: 32px;
+  height: 32px;
   padding: 0;
   border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-glass);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.btn-icon:hover {
+  background: var(--bg-glass);
+  border-color: var(--accent);
+  color: var(--accent);
+  transform: translateY(-1px);
+}
+
+.btn-icon.btn-delete:hover {
+  background: var(--danger-bg);
+  border-color: var(--danger);
+  color: var(--danger);
 }
 
 /* ── Inputs ── */

@@ -98,8 +98,8 @@ export default function BudgetsPage() {
                     <h3 style={{ fontSize: '1.1rem', fontWeight: 700 }}>{b.category}</h3>
                     <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Monthly Limit</span>
                   </div>
-                  <button className="btn-icon text-danger" onClick={() => setDeleteId(b._id)}>
-                    <Trash2 size={16} />
+                  <button className="btn-icon btn-delete" onClick={() => setDeleteId(b._id)} title="Delete Budget">
+                    <Trash2 size={14} />
                   </button>
                 </div>
 

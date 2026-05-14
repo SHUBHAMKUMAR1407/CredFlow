@@ -149,11 +149,11 @@ export default function TransactionsPage() {
                       </td>
                       <td style={{ textAlign: 'right' }}>
                         <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
-                          <button className="btn-icon" style={{ background: 'none', color: 'var(--text-muted)' }} onClick={() => handleEdit(tx)} title="Edit Transaction">
-                            <Edit2 size={16} />
+                          <button className="btn-icon" onClick={() => handleEdit(tx)} title="Edit Transaction">
+                            <Edit2 size={14} />
                           </button>
-                          <button className="btn-icon" style={{ background: 'none', color: 'var(--text-muted)' }} onClick={() => setDeleteId(tx._id)} title="Delete Transaction">
-                            <Trash2 size={16} />
+                          <button className="btn-icon btn-delete" onClick={() => setDeleteId(tx._id)} title="Delete Transaction">
+                            <Trash2 size={14} />
                           </button>
                         </div>
                       </td>
