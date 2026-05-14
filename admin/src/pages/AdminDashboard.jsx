@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { getAdminUsers, getAdminStats, getAdminActivity } from '../services/api';
-import { Users, Activity, Shield } from 'lucide-react';
+import { getAdminUsers, getAdminStats, getAdminActivity, deleteUser } from '../services/api';
+import { Users, Activity, Shield, Trash2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 export default function AdminDashboard() {
@@ -33,6 +33,20 @@ export default function AdminDashboard() {
     };
     fetchAdminData();
   }, []);
+
+  const handleDeleteUser = async (userId) => {
+    if (!window.confirm('Are you sure you want to permanently delete this user? This action cannot be undone.')) return;
+    try {
+      await deleteUser(userId);
+      toast.success('User deleted successfully');
+      setUsers(users.filter(u => u._id !== userId));
+      // Refresh stats
+      const statRes = await getAdminStats();
+      setStats(statRes.data);
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Failed to delete user');
+    }
+  };
 
   if (loading) {
     return (
@@ -74,7 +88,7 @@ export default function AdminDashboard() {
           <div style={{ overflowX: 'auto' }}>
             <table className="data-table">
               <thead>
-                <tr><th>Name</th><th>Email</th><th>Role</th></tr>
+                <tr><th>Name</th><th>Email</th><th>Role</th><th>Actions</th></tr>
               </thead>
               <tbody>
                 {users.map(u => (
@@ -82,6 +96,16 @@ export default function AdminDashboard() {
                     <td>{u.name}</td>
                     <td style={{ color: 'var(--text-muted)' }}>{u.email}</td>
                     <td><span className="badge badge-income">{u.role}</span></td>
+                    <td>
+                      <button 
+                        onClick={() => handleDeleteUser(u._id)}
+                        className="btn-icon btn-delete" 
+                        style={{ width: 32, height: 32, borderRadius: 6, opacity: 0.8 }} 
+                        title="Delete User"
+                      >
+                        <Trash2 size={16} />
+                      </button>
+                    </td>
                   </tr>
                 ))}
               </tbody>

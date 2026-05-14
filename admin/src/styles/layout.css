@@ -45,6 +45,12 @@
   display: none;
 }
 
+.sidebar.collapsed .sidebar-header {
+  flex-direction: column;
+  padding: 15px 0 0 0;
+  justify-content: center;
+}
+
 .sidebar-toggle {
   background: transparent;
   border: none;
@@ -56,6 +62,11 @@
   padding: 4px;
   border-radius: 6px;
   margin-left: auto;
+}
+
+.sidebar.collapsed .sidebar-toggle {
+  margin-left: 0;
+  margin-top: 6px;
 }
 
 .sidebar-toggle:hover {
@@ -164,6 +175,19 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
+}
+
+.sidebar.collapsed .sidebar-footer {
+  flex-direction: column;
+  padding: 20px 0;
+  justify-content: center;
+}
+
+.sidebar.collapsed .sidebar-footer-actions {
+  flex-direction: column;
+  margin-left: 0 !important;
+  margin-top: 12px;
+  align-items: center;
 }
 
 .sidebar.collapsed .user-info {

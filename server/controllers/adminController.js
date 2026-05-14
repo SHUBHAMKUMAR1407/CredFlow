@@ -60,3 +60,20 @@ exports.updateUserRole = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+// @route DELETE /api/admin/users/:id
+exports.deleteUser = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if (!user) return res.status(404).json({ message: 'User not found' });
+    
+    // Optionally delete user data here (transactions, budgets, etc.) or rely on mongoose hooks/DB cascading.
+    await Transaction.deleteMany({ userId: user._id });
+    await CreditScore.deleteMany({ userId: user._id });
+    
+    await User.findByIdAndDelete(req.params.id);
+    res.json({ message: 'User deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
