@@ -1,4 +1,11 @@
 const nodemailer = require('nodemailer');
+const dns = require('dns');
+
+// Force Node.js to use IPv4 instead of IPv6 for DNS resolution.
+// This fixes the 'ENETUNREACH 2607:...' error on Render where IPv6 routing is unavailable.
+if (dns.setDefaultResultOrder) {
+  dns.setDefaultResultOrder('ipv4first');
+}
 
 const sendEmail = async (options) => {
   // Use user-provided credentials or fallback to a console warning
