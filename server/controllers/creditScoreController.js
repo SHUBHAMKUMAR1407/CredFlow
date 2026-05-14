@@ -5,24 +5,19 @@ const { calculateCreditScore } = require('../services/creditScoreEngine');
 exports.getCreditScore = async (req, res) => {
   try {
     const now = new Date();
-    let creditScore = await CreditScore.findOne({
-      userId: req.user._id,
-      month: now.getMonth() + 1,
-      year: now.getFullYear()
-    });
-
-    if (!creditScore) {
-      // Calculate a new score
-      const result = await calculateCreditScore(req.user._id);
-      creditScore = await CreditScore.create({
-        userId: req.user._id,
+    // Always recalculate fresh score
+    const result = await calculateCreditScore(req.user._id);
+    
+    const creditScore = await CreditScore.findOneAndUpdate(
+      { userId: req.user._id, month: now.getMonth() + 1, year: now.getFullYear() },
+      {
         score: result.score,
         factors: result.factors,
         suggestions: result.suggestions,
-        month: now.getMonth() + 1,
-        year: now.getFullYear()
-      });
-    }
+        calculatedAt: new Date()
+      },
+      { upsert: true, new: true }
+    );
 
     res.json(creditScore);
   } catch (error) {
