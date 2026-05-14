@@ -10,22 +10,33 @@ const sendEmail = async (options) => {
     return;
   }
 
-  const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS,
-    },
-  });
+  try {
+    const transporter = nodemailer.createTransport({
+      host: 'smtp.gmail.com',
+      port: 465,
+      secure: true, // Use SSL
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+      connectionTimeout: 10000, // 10 seconds
+      greetingTimeout: 5000,
+      socketTimeout: 15000,
+    });
 
-  const mailOptions = {
-    from: `"CredFlow Support" <${process.env.EMAIL_USER}>`,
-    to: options.email,
-    subject: options.subject,
-    text: options.message,
-  };
+    const mailOptions = {
+      from: `"CredFlow Support" <${process.env.EMAIL_USER}>`,
+      to: options.email,
+      subject: options.subject,
+      text: options.message,
+    };
 
-  await transporter.sendMail(mailOptions);
+    const info = await transporter.sendMail(mailOptions);
+    console.log(`✅ Email sent successfully to ${options.email}: ${info.messageId}`);
+  } catch (error) {
+    console.error('❌ Nodemailer Error:', error.message);
+    throw new Error(`Email delivery failed: ${error.message}`);
+  }
 };
 
 module.exports = sendEmail;

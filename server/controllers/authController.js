@@ -76,25 +76,44 @@ exports.login = async (req, res) => {
 exports.forgotPassword = async (req, res) => {
   try {
     const { email } = req.body;
+    console.log(`🔍 Password reset requested for: ${email}`);
+    
     const user = await User.findOne({ email });
     if (!user) {
+      console.log('❌ User not found');
       return res.status(404).json({ message: 'User not found' });
     }
+
     const otp = generateOTP();
     user.otp = otp;
     user.otpExpiry = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
     await user.save();
 
+    console.log(`🔑 Generated OTP: ${otp} (Valid for 10 mins)`);
+
     const message = `Your CredFlow password reset OTP is: ${otp}\n\nThis OTP is valid for 10 minutes. Please do not share it with anyone.`;
     
-    await sendEmail({
-      email: user.email,
-      subject: 'CredFlow - Password Reset OTP',
-      message
-    });
+    try {
+      console.log('📧 Attempting to send email...');
+      await sendEmail({
+        email: user.email,
+        subject: 'CredFlow - Password Reset OTP',
+        message
+      });
+      console.log('✅ Email sent successfully');
+    } catch (emailError) {
+      console.error('⚠️ Email Service Error:', emailError.message);
+      console.log('👉 FALLBACK: Use the OTP shown in this terminal to proceed.');
+      // We still return success so the user can enter the OTP from console if needed (for dev/local)
+      return res.json({ 
+        message: 'OTP generated (Email service unavailable, please check server logs for development)',
+        devOTP: process.env.NODE_ENV === 'development' ? otp : undefined 
+      });
+    }
 
     res.json({ message: 'OTP sent to your email' });
   } catch (error) {
+    console.error('🔥 ForgotPassword Controller Error:', error);
     res.status(500).json({ message: error.message });
   }
 };

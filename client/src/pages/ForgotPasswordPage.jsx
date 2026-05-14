@@ -16,13 +16,28 @@ export default function ForgotPasswordPage() {
 
   const handleSendOTP = async (e) => {
     e.preventDefault();
-    setError(''); setLoading(true);
+    setError(''); 
+    setLoading(true);
+    
+    // Set a manual timeout of 15 seconds to prevent hanging
+    const timeout = setTimeout(() => {
+      if (loading) {
+        setLoading(false);
+        setError('Request timed out. Please check your internet or try again.');
+      }
+    }, 15000);
+
     try {
-      await forgotPassword({ email });
-      setMessage('OTP sent! Please check your email.');
+      const res = await forgotPassword({ email });
+      clearTimeout(timeout);
+      setMessage(res.data.message || 'OTP sent! Please check your email.');
       setStep(2);
-    } catch (err) { setError(err.response?.data?.message || 'Failed to send OTP'); }
-    setLoading(false);
+    } catch (err) { 
+      clearTimeout(timeout);
+      setError(err.response?.data?.message || 'Failed to send OTP. Server might be slow.'); 
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleOTPChange = (i, val) => {
