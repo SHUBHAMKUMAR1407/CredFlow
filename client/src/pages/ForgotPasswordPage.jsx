@@ -19,13 +19,11 @@ export default function ForgotPasswordPage() {
     setError(''); 
     setLoading(true);
     
-    // Set a manual timeout of 15 seconds to prevent hanging
+    // Set a manual timeout to prevent hanging if Render is waking up (takes up to 50s)
     const timeout = setTimeout(() => {
-      if (loading) {
-        setLoading(false);
-        setError('Request timed out. Please check your internet or try again.');
-      }
-    }, 15000);
+      setLoading(false);
+      setError('Server is taking too long to respond. It might be waking up. Please try again.');
+    }, 25000); // 25 seconds timeout
 
     try {
       const res = await forgotPassword({ email });
@@ -36,6 +34,7 @@ export default function ForgotPasswordPage() {
       clearTimeout(timeout);
       setError(err.response?.data?.message || 'Failed to send OTP. Server might be slow.'); 
     } finally {
+      // If the timeout already fired, this will just set false again, which is safe.
       setLoading(false);
     }
   };
