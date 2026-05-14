@@ -135,25 +135,29 @@ export default function Sidebar({ collapsed, setCollapsed }) {
         </nav>
 
         <div className="sidebar-footer">
-          <div className="avatar" style={{ cursor: 'pointer', overflow: 'hidden', border: '2px solid var(--border-glass)' }} onClick={() => setShowProfile(true)} title="Edit Profile">
+          <div className="avatar" style={{ cursor: 'pointer', overflow: 'hidden', border: '2px solid var(--border-glass)', flexShrink: 0 }} onClick={() => setShowProfile(true)} title="Edit Profile">
             {user?.avatar ? (
               <img src={user.avatar} alt="Profile" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
             ) : (
               user?.name?.charAt(0)?.toUpperCase()
             )}
           </div>
-          <div className="user-info">
-            <div className="user-name">{user?.name}</div>
-            <div className="user-email">{user?.email}</div>
-          </div>
-          <div style={{ marginLeft: 'auto', display: 'flex', gap: 4 }}>
-            <button className="sidebar-toggle" onClick={() => setShowProfile(true)} title="Settings">
-              <Settings size={16} />
-            </button>
-            <button className="sidebar-toggle" onClick={handleLogout} title="Logout">
-              <LogOut size={16} />
-            </button>
-          </div>
+          {!collapsed && (
+            <>
+              <div className="user-info">
+                <div className="user-name">{user?.name}</div>
+                <div className="user-email">{user?.email}</div>
+              </div>
+              <div style={{ marginLeft: 'auto', display: 'flex', gap: 4 }}>
+                <button className="sidebar-toggle" onClick={() => setShowProfile(true)} title="Settings">
+                  <Settings size={16} />
+                </button>
+                <button className="sidebar-toggle" onClick={handleLogout} title="Logout">
+                  <LogOut size={16} />
+                </button>
+              </div>
+            </>
+          )}
         </div>
       </aside>
 
@@ -214,7 +218,7 @@ export default function Sidebar({ collapsed, setCollapsed }) {
                             <input id="avatar-upload" type="file" accept="image/*" style={{ display: 'none' }} onChange={handleAvatarChange} disabled={uploading} />
                           </label>
                           {formData.avatar && (
-                            <button type="button" onClick={() => setFormData({ ...formData, avatar: '' })} style={{ position: 'absolute', top: -5, right: -5, width: 28, height: 28, background: 'var(--danger)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', border: '3px solid var(--bg-secondary)', color: 'white', padding: 0 }} title="Remove Photo">
+                            <button type="button" onClick={() => setFormData({ ...formData, avatar: '' })} style={{ position: 'absolute', bottom: -5, left: -5, width: 28, height: 28, background: 'var(--danger)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', border: '3px solid var(--bg-secondary)', color: 'white', padding: 0 }} title="Remove Photo">
                               <Trash2 size={14} />
                             </button>
                           )}

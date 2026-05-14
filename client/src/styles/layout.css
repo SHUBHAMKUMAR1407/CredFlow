@@ -145,6 +145,12 @@
   display: flex;
   align-items: center;
   gap: 12px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sidebar.collapsed .sidebar-footer {
+  justify-content: center;
+  padding: 20px 10px;
 }
 
 .avatar {
