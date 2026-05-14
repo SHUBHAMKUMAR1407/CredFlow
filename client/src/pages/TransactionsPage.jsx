@@ -18,7 +18,7 @@ export default function TransactionsPage() {
   const [editId, setEditId] = useState(null);
   const [deleteId, setDeleteId] = useState(null);
   const [formData, setFormData] = useState({ type: 'expense', amount: '', category: CATEGORIES.expense[0].value, description: '', date: new Date().toISOString().split('T')[0], paymentMethod: 'upi' });
-  const [filters, setFilters] = useState({ type: '', search: initialSearch });
+  const [filters, setFilters] = useState({ type: '', category: '', search: initialSearch });
 
   const fetchTransactions = async () => {
     try {
@@ -107,11 +107,20 @@ export default function TransactionsPage() {
               onChange={e => setFilters({ ...filters, search: e.target.value })}
             />
           </div>
-          <select className="form-input" style={{ width: 140 }} value={filters.type} onChange={e => setFilters({ ...filters, type: e.target.value })}>
-            <option value="">All Types</option>
-            <option value="income">Income</option>
-            <option value="expense">Expense</option>
-          </select>
+          <div style={{ display: 'flex', gap: 12 }}>
+            <select className="filter-select" value={filters.type} onChange={e => setFilters({ ...filters, type: e.target.value })}>
+              <option value="">All Types</option>
+              <option value="income">Income</option>
+              <option value="expense">Expense</option>
+            </select>
+
+            <select className="filter-select" value={filters.category} onChange={e => setFilters({ ...filters, category: e.target.value })}>
+              <option value="">All Categories</option>
+              {[...CATEGORIES.income, ...CATEGORIES.expense].map(c => (
+                <option key={c.value} value={c.value}>{c.icon} {c.label}</option>
+              ))}
+            </select>
+          </div>
         </div>
 
         {loading ? <div className="loader-container"><div className="spinner" /></div> : (

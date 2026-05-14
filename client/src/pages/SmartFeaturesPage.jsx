@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import { getSuggestions, getSavingsGoals, createSavingsGoal, deleteSavingsGoal, getBudgets } from '../services/api';
+import { getSuggestions, getSavingsGoals, createSavingsGoal, deleteSavingsGoal, getBudgets, updateSavingsGoal } from '../services/api';
 import { formatCurrency } from '../utils/formatCurrency';
-import { Lightbulb, Target, AlertTriangle, Plus, Trash2, X } from 'lucide-react';
+import { Lightbulb, Target, AlertTriangle, Plus, Trash2, X, Edit2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 export default function SmartFeaturesPage() {
@@ -10,6 +10,8 @@ export default function SmartFeaturesPage() {
   const [budgets, setBudgets] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showGoalModal, setShowGoalModal] = useState(false);
+  const [isEditingGoal, setIsEditingGoal] = useState(false);
+  const [editGoalId, setEditGoalId] = useState(null);
   const [newGoal, setNewGoal] = useState({ name: '', targetAmount: '', icon: '🎯', color: '#6366f1' });
 
   const fetchSmartData = async () => {
@@ -34,14 +36,28 @@ export default function SmartFeaturesPage() {
   const handleAddGoal = async (e) => {
     e.preventDefault();
     try {
-      await createSavingsGoal({ ...newGoal, targetAmount: Number(newGoal.targetAmount) });
-      toast.success('Savings goal created!');
+      if (isEditingGoal) {
+        await updateSavingsGoal(editGoalId, { ...newGoal, targetAmount: Number(newGoal.targetAmount) });
+        toast.success('Savings goal updated!');
+      } else {
+        await createSavingsGoal({ ...newGoal, targetAmount: Number(newGoal.targetAmount) });
+        toast.success('Savings goal created!');
+      }
       setShowGoalModal(false);
       setNewGoal({ name: '', targetAmount: '', icon: '🎯', color: '#6366f1' });
+      setIsEditingGoal(false);
+      setEditGoalId(null);
       fetchSmartData();
     } catch (err) {
-      toast.error('Failed to create goal');
+      toast.error(err.response?.data?.message || 'Failed to save goal');
     }
+  };
+
+  const handleEditGoal = (goal) => {
+    setNewGoal({ name: goal.name, targetAmount: goal.targetAmount, icon: goal.icon, color: goal.color });
+    setEditGoalId(goal._id);
+    setIsEditingGoal(true);
+    setShowGoalModal(true);
   };
 
   const handleDeleteGoal = async (id) => {
@@ -120,9 +136,14 @@ export default function SmartFeaturesPage() {
                   <div key={g._id} className="glass-card savings-goal-card" style={{ padding: 16 }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 12 }}>
                       <div className="goal-icon" style={{ margin: 0 }}>{g.icon}</div>
-                      <button className="btn-icon btn-delete" style={{ width: 24, height: 24, borderRadius: 6, opacity: 0.6 }} onClick={() => handleDeleteGoal(g._id)} title="Delete Goal">
-                        <X size={12} />
-                      </button>
+                      <div style={{ display: 'flex', gap: 6 }}>
+                        <button className="btn-icon" style={{ width: 24, height: 24, borderRadius: 6, opacity: 0.7 }} onClick={() => handleEditGoal(g)} title="Edit Goal">
+                          <Edit2 size={12} />
+                        </button>
+                        <button className="btn-icon btn-delete" style={{ width: 24, height: 24, borderRadius: 6, opacity: 0.7 }} onClick={() => handleDeleteGoal(g._id)} title="Delete Goal">
+                          <X size={12} />
+                        </button>
+                      </div>
                     </div>
 
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: 8 }}>
