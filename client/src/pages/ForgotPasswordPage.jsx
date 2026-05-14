@@ -13,28 +13,32 @@ export default function ForgotPasswordPage() {
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [fallbackOtp, setFallbackOtp] = useState('');
 
   const handleSendOTP = async (e) => {
     e.preventDefault();
     setError(''); 
+    setMessage('');
     setLoading(true);
-    
-    // Set a manual timeout to prevent hanging if Render is waking up (takes up to 50s)
-    const timeout = setTimeout(() => {
-      setLoading(false);
-      setError('Server is taking too long to respond. It might be waking up. Please try again.');
-    }, 25000); // 25 seconds timeout
 
     try {
       const res = await forgotPassword({ email });
-      clearTimeout(timeout);
-      setMessage(res.data.message || 'OTP sent! Please check your email.');
+      const data = res.data;
+      
+      // If email failed and backend returned OTP directly
+      if (data.otp) {
+        setFallbackOtp(data.otp);
+        // Auto-fill OTP into the input boxes
+        const otpDigits = data.otp.toString().split('');
+        setOtp(otpDigits);
+        setMessage('OTP has been auto-filled below. Click "Verify & Proceed" to continue.');
+      } else {
+        setMessage('OTP sent to your email! Please check your inbox.');
+      }
       setStep(2);
     } catch (err) { 
-      clearTimeout(timeout);
-      setError(err.response?.data?.message || 'Failed to send OTP. Server might be slow.'); 
+      setError(err.response?.data?.message || 'Failed to send OTP. Please try again.'); 
     } finally {
-      // If the timeout already fired, this will just set false again, which is safe.
       setLoading(false);
     }
   };
@@ -89,7 +93,7 @@ export default function ForgotPasswordPage() {
           </h2>
           <p className="auth-subtitle">
             {step === 1 ? 'Enter your email to receive a reset code' : 
-             step === 2 ? 'Enter the 6-digit code sent to your email' : 
+             step === 2 ? 'Enter the 6-digit code to proceed' : 
              step === 3 ? 'Choose a strong new password' : ''}
           </p>
           {error && <div className="auth-error">{error}</div>}

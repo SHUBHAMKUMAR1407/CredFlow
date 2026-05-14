@@ -93,6 +93,7 @@ exports.forgotPassword = async (req, res) => {
 
     const message = `Your CredFlow password reset OTP is: ${otp}\n\nThis OTP is valid for 10 minutes. Please do not share it with anyone.`;
     
+    let emailSent = false;
     try {
       console.log('📧 Attempting to send email...');
       await sendEmail({
@@ -101,17 +102,19 @@ exports.forgotPassword = async (req, res) => {
         message
       });
       console.log('✅ Email sent successfully');
+      emailSent = true;
     } catch (emailError) {
       console.error('⚠️ Email Service Error:', emailError.message);
-      console.log('👉 FALLBACK: Use the OTP shown in this terminal to proceed.');
-      // We still return success so the user can enter the OTP from console if needed (for dev/local)
-      return res.json({ 
-        message: `OTP generated but email failed: ${emailError.message}. Check server logs.`,
-        devOTP: process.env.NODE_ENV === 'development' ? otp : undefined 
-      });
     }
 
-    res.json({ message: 'OTP sent to your email' });
+    // Always return OTP in response so frontend can show it as fallback
+    res.json({ 
+      message: emailSent 
+        ? 'OTP sent to your email' 
+        : 'Email service unavailable. Use the OTP shown below.',
+      otp: emailSent ? undefined : otp,
+      emailSent 
+    });
   } catch (error) {
     console.error('🔥 ForgotPassword Controller Error:', error);
     res.status(500).json({ message: error.message });
