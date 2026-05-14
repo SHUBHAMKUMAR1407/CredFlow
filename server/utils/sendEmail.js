@@ -1,3 +1,5 @@
+const https = require('https');
+
 const sendEmail = async (options) => {
   const apiKey = process.env.BREVO_API_KEY;
   
@@ -9,37 +11,55 @@ const sendEmail = async (options) => {
     return;
   }
 
-  try {
-    const response = await fetch('https://api.brevo.com/v3/smtp/email', {
+  const postData = JSON.stringify({
+    sender: { 
+      name: 'CredFlow', 
+      email: process.env.EMAIL_USER || 'sky143c@gmail.com' 
+    },
+    to: [{ email: options.email }],
+    subject: options.subject,
+    textContent: options.message,
+  });
+
+  return new Promise((resolve, reject) => {
+    const req = https.request({
+      hostname: 'api.brevo.com',
+      path: '/v3/smtp/email',
       method: 'POST',
       headers: {
         'accept': 'application/json',
         'api-key': apiKey,
         'content-type': 'application/json',
+        'content-length': Buffer.byteLength(postData),
       },
-      body: JSON.stringify({
-        sender: { 
-          name: 'CredFlow', 
-          email: process.env.EMAIL_USER || 'sky143c@gmail.com' 
-        },
-        to: [{ email: options.email }],
-        subject: options.subject,
-        textContent: options.message,
-      }),
+    }, (res) => {
+      let data = '';
+      res.on('data', (chunk) => { data += chunk; });
+      res.on('end', () => {
+        try {
+          const parsed = JSON.parse(data);
+          if (res.statusCode >= 200 && res.statusCode < 300) {
+            console.log(`✅ Email sent successfully to ${options.email} (ID: ${parsed.messageId})`);
+            resolve(parsed);
+          } else {
+            console.error('❌ Brevo API Error:', parsed);
+            reject(new Error(parsed.message || 'Email sending failed'));
+          }
+        } catch (e) {
+          console.error('❌ Brevo Response Parse Error:', data);
+          reject(new Error('Invalid response from email service'));
+        }
+      });
     });
 
-    const data = await response.json();
+    req.on('error', (error) => {
+      console.error('❌ Brevo Connection Error:', error.message);
+      reject(new Error(`Email delivery failed: ${error.message}`));
+    });
 
-    if (!response.ok) {
-      console.error('❌ Brevo API Error:', data);
-      throw new Error(data.message || 'Email sending failed');
-    }
-
-    console.log(`✅ Email sent successfully to ${options.email} (Message ID: ${data.messageId})`);
-  } catch (error) {
-    console.error('❌ Email Error:', error.message);
-    throw new Error(`Email delivery failed: ${error.message}`);
-  }
+    req.write(postData);
+    req.end();
+  });
 };
 
 module.exports = sendEmail;
