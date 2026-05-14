@@ -8,6 +8,16 @@
 
 ---
 
+## 🔗 Deployment Links
+
+| Portal | Live Link |
+| :--- | :--- |
+| **🚀 Main Application (User)** | [cred-flow-hazel.vercel.app](https://cred-flow-hazel.vercel.app) |
+| **🛠️ Admin Control Panel** | [cred-flow-31r3.vercel.app](https://cred-flow-31r3.vercel.app) |
+| **⚙️ Backend API Server** | [credflow-4vjr.onrender.com](https://credflow-4vjr.onrender.com) |
+
+---
+
 ## 🌟 Key Features
 
 ### 👤 User Experience (Client Portal)
