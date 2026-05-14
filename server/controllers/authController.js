@@ -106,7 +106,7 @@ exports.forgotPassword = async (req, res) => {
       console.log('👉 FALLBACK: Use the OTP shown in this terminal to proceed.');
       // We still return success so the user can enter the OTP from console if needed (for dev/local)
       return res.json({ 
-        message: 'OTP generated (Email service unavailable, please check server logs for development)',
+        message: `OTP generated but email failed: ${emailError.message}. Check server logs.`,
         devOTP: process.env.NODE_ENV === 'development' ? otp : undefined 
       });
     }
