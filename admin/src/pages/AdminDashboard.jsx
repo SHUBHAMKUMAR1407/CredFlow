@@ -8,6 +8,7 @@ export default function AdminDashboard() {
   const [users, setUsers] = useState([]);
   const [activities, setActivities] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [userToDelete, setUserToDelete] = useState(null);
 
   useEffect(() => {
     const fetchAdminData = async () => {
@@ -34,17 +35,19 @@ export default function AdminDashboard() {
     fetchAdminData();
   }, []);
 
-  const handleDeleteUser = async (userId) => {
-    if (!window.confirm('Are you sure you want to permanently delete this user? This action cannot be undone.')) return;
+  const confirmDeleteUser = async () => {
+    if (!userToDelete) return;
     try {
-      await deleteUser(userId);
+      await deleteUser(userToDelete._id);
       toast.success('User deleted successfully');
-      setUsers(users.filter(u => u._id !== userId));
+      setUsers(users.filter(u => u._id !== userToDelete._id));
       // Refresh stats
       const statRes = await getAdminStats();
       setStats(statRes.data);
+      setUserToDelete(null);
     } catch (err) {
       toast.error(err.response?.data?.message || 'Failed to delete user');
+      setUserToDelete(null);
     }
   };
 
@@ -98,7 +101,7 @@ export default function AdminDashboard() {
                     <td><span className={`badge ${u.role === 'admin' ? 'badge-income' : 'badge-warning'}`}>{u.role}</span></td>
                     <td>
                       <button
-                        onClick={() => handleDeleteUser(u._id)}
+                        onClick={() => setUserToDelete(u)}
                         className="btn-icon btn-delete"
                         style={{ width: 32, height: 32, borderRadius: 6, opacity: 0.8 }}
                         title="Delete User"
@@ -126,6 +129,29 @@ export default function AdminDashboard() {
           </div>
         </div>
       </div>
+
+      {userToDelete && (
+        <div className="modal-overlay">
+          <div className="modal-content animate-scale" style={{ maxWidth: 400, textAlign: 'center', padding: '32px 24px' }}>
+            <div style={{ marginBottom: 24 }}>
+              <div style={{ width: 64, height: 64, background: 'rgba(239,68,68,0.1)', color: 'var(--danger)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}>
+                <Trash2 size={32} />
+              </div>
+              <h2 style={{ fontSize: '1.25rem', marginBottom: 8 }}>Delete User?</h2>
+              <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', lineHeight: 1.5 }}>
+                Are you sure you want to permanently delete <strong>{userToDelete.name}</strong> ({userToDelete.email})? This action cannot be undone.
+              </p>
+            </div>
+            <div style={{ display: 'flex', gap: 12, justifyItems: 'center' }}>
+              <button className="btn btn-secondary" onClick={() => setUserToDelete(null)} style={{ flex: 1, justifyContent: 'center' }}>Cancel</button>
+              <button className="btn btn-danger" style={{ flex: 1, justifyContent: 'center' }} onClick={confirmDeleteUser}>
+                Yes, Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }
