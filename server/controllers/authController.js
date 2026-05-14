@@ -16,25 +16,50 @@ exports.register = async (req, res) => {
       return res.status(400).json({ message: 'Please provide all fields' });
     }
     const userExists = await User.findOne({ email });
-    if (userExists) {
+    if (userExists && userExists.isVerified) {
       return res.status(400).json({ message: 'User already exists' });
     }
+
+    // If unverified user exists, delete and re-create
+    if (userExists && !userExists.isVerified) {
+      await User.deleteOne({ email });
+    }
+
+    const otp = generateOTP();
     const user = await User.create({ 
       name, 
       email, 
       password,
-      isVerified: true // Automatically verify new users
+      isVerified: false,
+      otp,
+      otpExpiry: new Date(Date.now() + 10 * 60 * 1000)
     });
+
+    console.log(`📧 Sending verification OTP to ${email}: ${otp}`);
+
+    const message = `Welcome to CredFlow!\n\nYour email verification OTP is: ${otp}\n\nThis OTP is valid for 10 minutes. Please do not share it with anyone.`;
     
-    await ActivityLog.create({ userId: user._id, action: 'REGISTER', details: 'New account created and automatically verified' });
+    let emailSent = false;
+    try {
+      await sendEmail({
+        email: user.email,
+        subject: 'CredFlow - Verify Your Email',
+        message
+      });
+      emailSent = true;
+      console.log('✅ Verification email sent');
+    } catch (emailError) {
+      console.error('⚠️ Email Error:', emailError.message);
+    }
+
+    await ActivityLog.create({ userId: user._id, action: 'REGISTER', details: 'Account created, pending email verification' });
 
     res.status(201).json({
-      _id: user._id,
-      name: user.name,
+      message: 'Account created! Please verify your email.',
       email: user.email,
-      role: user.role,
-      avatar: user.avatar,
-      token: generateToken(user._id)
+      requiresVerification: true,
+      otp: emailSent ? undefined : otp,
+      emailSent
     });
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -52,6 +77,16 @@ exports.login = async (req, res) => {
     if (!user || !(await user.matchPassword(password))) {
       return res.status(401).json({ message: 'Invalid email or password' });
     }
+
+    // Check if email is verified
+    if (!user.isVerified) {
+      return res.status(403).json({ 
+        message: 'Please verify your email before logging in',
+        requiresVerification: true,
+        email: user.email
+      });
+    }
+
     await ActivityLog.create({ userId: user._id, action: 'LOGIN', details: 'User logged in' });
 
     res.json({
@@ -71,6 +106,43 @@ exports.login = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+// @route POST /api/auth/verify-email
+exports.verifyEmail = async (req, res) => {
+  try {
+    const { email, otp } = req.body;
+    console.log(`🔍 Email verification attempt for: ${email}, OTP: ${otp}`);
+
+    const user = await User.findOne({ email, otp, otpExpiry: { $gt: Date.now() } });
+    if (!user) {
+      return res.status(400).json({ message: 'Invalid or expired OTP' });
+    }
+
+    user.isVerified = true;
+    user.otp = undefined;
+    user.otpExpiry = undefined;
+    await user.save();
+
+    await ActivityLog.create({ userId: user._id, action: 'EMAIL_VERIFIED', details: 'Email verified successfully' });
+
+    console.log(`✅ Email verified for: ${email}`);
+
+    // Return token so user is automatically logged in after verification
+    res.json({
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      avatar: user.avatar,
+      token: generateToken(user._id),
+      message: 'Email verified successfully!'
+    });
+  } catch (error) {
+    console.error('🔥 VerifyEmail Error:', error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
 
 // @route POST /api/auth/forgot-password
 exports.forgotPassword = async (req, res) => {

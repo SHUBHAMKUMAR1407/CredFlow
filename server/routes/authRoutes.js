@@ -1,12 +1,13 @@
 const express = require('express');
 const router = express.Router();
-const { register, login, forgotPassword, verifyOTP, getProfile, updateProfile } = require('../controllers/authController');
+const { register, login, forgotPassword, verifyOTP, verifyEmail, getProfile, updateProfile } = require('../controllers/authController');
 const { protect } = require('../middleware/auth');
 
 const { upload } = require('../config/cloudinary');
 
 router.post('/register', register);
 router.post('/login', login);
+router.post('/verify-email', verifyEmail);
 router.post('/forgot-password', forgotPassword);
 router.post('/verify-otp', verifyOTP);
 router.get('/profile', protect, getProfile);

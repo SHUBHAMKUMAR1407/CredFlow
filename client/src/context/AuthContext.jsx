@@ -26,8 +26,7 @@ export function AuthProvider({ children }) {
 
   const signup = async (name, email, password) => {
     const { data } = await registerUser({ name, email, password });
-    setUser(data);
-    localStorage.setItem('credflow_user', JSON.stringify(data));
+    // Don't auto-login — user needs to verify email first
     return data;
   };
 
