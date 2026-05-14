@@ -32,6 +32,21 @@ const calculateCreditScore = async (userId) => {
     date: { $gte: sixMonthsAgo }
   }).sort({ date: 1 });
 
+  // New user with no transactions — return 0 score
+  if (transactions.length === 0) {
+    return {
+      score: 0,
+      factors: {
+        paymentConsistency: { score: 0, max: WEIGHTS.paymentConsistency, details: 'No transactions yet' },
+        incomeStability: { score: 0, max: WEIGHTS.incomeStability, details: 'No income data yet' },
+        savingsRatio: { score: 0, max: WEIGHTS.savingsRatio, details: 'No savings data yet' },
+        spendingDiscipline: { score: 0, max: WEIGHTS.spendingDiscipline, details: 'No spending data yet' },
+        accountAge: { score: 0, max: WEIGHTS.accountAge, details: 'New account' }
+      },
+      suggestions: ['Start adding your income and expenses to build your credit score!']
+    };
+  }
+
   // Group transactions by month
   const monthlyData = {};
   transactions.forEach(t => {
