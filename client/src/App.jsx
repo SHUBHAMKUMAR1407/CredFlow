@@ -16,6 +16,7 @@ import CreditScorePage from './pages/CreditScorePage';
 import SmartFeaturesPage from './pages/SmartFeaturesPage';
 import ReportsPage from './pages/ReportsPage';
 import BudgetsPage from './pages/BudgetsPage';
+import OTPVerificationPage from './pages/OTPVerificationPage';
 
 import { NotificationProvider } from './context/NotificationContext';
 
@@ -38,6 +39,7 @@ function App() {
           <Routes>
             <Route path="/login" element={<LoginPage />} />
             <Route path="/signup" element={<SignupPage />} />
+            <Route path="/verify-otp" element={<OTPVerificationPage />} />
             <Route path="/forgot-password" element={<ForgotPasswordPage />} />
             
             <Route path="/" element={<ProtectedRoute><AppLayout /></ProtectedRoute>}>

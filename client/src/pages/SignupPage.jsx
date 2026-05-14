@@ -22,7 +22,7 @@ export default function SignupPage() {
     setLoading(true);
     try {
       await signup(name, email, password);
-      navigate('/dashboard');
+      navigate(`/verify-otp?email=${encodeURIComponent(email)}`);
     } catch (err) {
       setError(err.response?.data?.message || 'Registration failed');
     }

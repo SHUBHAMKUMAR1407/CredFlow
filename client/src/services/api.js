@@ -55,6 +55,7 @@ export const getAdminUsers = () => API.get('/admin/users');
 export const getAdminStats = () => API.get('/admin/stats');
 export const getAdminActivity = () => API.get('/admin/activity');
 export const updateUserRole = (id, data) => API.put(`/admin/users/${id}/role`, data);
+export const deleteUser = (id) => API.delete(`/admin/users/${id}`);
 
 // Seed
 export const seedData = () => API.post('/seed');

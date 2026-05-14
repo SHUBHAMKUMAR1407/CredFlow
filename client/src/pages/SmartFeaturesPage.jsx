@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import { getSuggestions, getSavingsGoals, getBudgets } from '../services/api';
+import { getSuggestions, getSavingsGoals, createSavingsGoal, deleteSavingsGoal, getBudgets } from '../services/api';
 import { formatCurrency } from '../utils/formatCurrency';
-import { Lightbulb, Target, AlertTriangle, TrendingUp } from 'lucide-react';
+import { Lightbulb, Target, AlertTriangle, Plus, Trash2, X } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 export default function SmartFeaturesPage() {
@@ -9,24 +9,50 @@ export default function SmartFeaturesPage() {
   const [goals, setGoals] = useState([]);
   const [budgets, setBudgets] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [showGoalModal, setShowGoalModal] = useState(false);
+  const [newGoal, setNewGoal] = useState({ name: '', targetAmount: '', icon: '🎯', color: '#6366f1' });
+
+  const fetchSmartData = async () => {
+    try {
+      const [suggRes, goalRes, budgRes] = await Promise.all([
+        getSuggestions(), getSavingsGoals(), getBudgets({})
+      ]);
+      setSuggestions(suggRes.data);
+      setGoals(goalRes.data);
+      setBudgets(budgRes.data);
+    } catch (err) {
+      toast.error('Failed to load smart features');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchSmartData = async () => {
-      try {
-        const [suggRes, goalRes, budgRes] = await Promise.all([
-          getSuggestions(), getSavingsGoals(), getBudgets({})
-        ]);
-        setSuggestions(suggRes.data);
-        setGoals(goalRes.data);
-        setBudgets(budgRes.data);
-      } catch (err) {
-        toast.error('Failed to load smart features');
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchSmartData();
   }, []);
+
+  const handleAddGoal = async (e) => {
+    e.preventDefault();
+    try {
+      await createSavingsGoal({ ...newGoal, targetAmount: Number(newGoal.targetAmount) });
+      toast.success('Savings goal created!');
+      setShowGoalModal(false);
+      setNewGoal({ name: '', targetAmount: '', icon: '🎯', color: '#6366f1' });
+      fetchSmartData();
+    } catch (err) {
+      toast.error('Failed to create goal');
+    }
+  };
+
+  const handleDeleteGoal = async (id) => {
+    try {
+      await deleteSavingsGoal(id);
+      toast.success('Goal removed');
+      fetchSmartData();
+    } catch (err) {
+      toast.error('Failed to remove goal');
+    }
+  };
 
   if (loading) return <div className="loader-container"><div className="spinner" /></div>;
 
@@ -79,26 +105,37 @@ export default function SmartFeaturesPage() {
             )}
           </div>
 
-          <h3 style={{ marginBottom: 16, display: 'flex', alignItems: 'center', gap: 8 }}><Target color="var(--accent)" /> Savings Goals</h3>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+            <h3 style={{ display: 'flex', alignItems: 'center', gap: 8 }}><Target color="var(--accent)" /> Savings Goals</h3>
+            <button className="btn btn-primary btn-sm" onClick={() => setShowGoalModal(true)}>
+              <Plus size={14} /> Add Goal
+            </button>
+          </div>
+
           {goals.length === 0 ? <div className="glass-card empty-state"><p>No active savings goals.</p></div> : (
             <div className="grid-2">
               {goals.map(g => {
                 const pct = Math.min(100, (g.currentAmount / g.targetAmount) * 100);
                 return (
                   <div key={g._id} className="glass-card savings-goal-card" style={{ padding: 16 }}>
-                    <div className="savings-goal-header">
-                      <div>
-                        <div className="goal-icon">{g.icon}</div>
-                        <div className="goal-name">{g.name}</div>
-                      </div>
-                      <div style={{ fontSize: '0.8rem', fontWeight: 600, color: g.color }}>{Math.round(pct)}%</div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 12 }}>
+                      <div className="goal-icon" style={{ margin: 0 }}>{g.icon}</div>
+                      <button className="btn-icon btn-delete" style={{ width: 24, height: 24, borderRadius: 6, opacity: 0.6 }} onClick={() => handleDeleteGoal(g._id)} title="Delete Goal">
+                        <X size={12} />
+                      </button>
                     </div>
-                    <div className="progress-bar" style={{ height: 6 }}>
+
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: 8 }}>
+                      <div className="goal-name" style={{ margin: 0 }}>{g.name}</div>
+                      <div style={{ fontSize: '0.8rem', fontWeight: 700, color: g.color }}>{Math.round(pct)}%</div>
+                    </div>
+
+                    <div className="progress-bar" style={{ height: 6, marginBottom: 8 }}>
                       <div className="progress-fill" style={{ width: `${pct}%`, background: g.color }} />
                     </div>
                     <div className="goal-amounts">
-                      <span className="current">{formatCurrency(g.currentAmount)}</span>
-                      <span>{formatCurrency(g.targetAmount)}</span>
+                      <span className="current" style={{ fontSize: '0.9rem', fontWeight: 700 }}>{formatCurrency(g.currentAmount)}</span>
+                      <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{formatCurrency(g.targetAmount)}</span>
                     </div>
                   </div>
                 );
@@ -107,6 +144,48 @@ export default function SmartFeaturesPage() {
           )}
         </div>
       </div>
+
+      {showGoalModal && (
+        <div className="modal-overlay">
+          <div className="modal-content animate-scale">
+            <div className="modal-header">
+              <h2>Add Savings Goal</h2>
+              <button className="modal-close" onClick={() => setShowGoalModal(false)}>×</button>
+            </div>
+            <form onSubmit={handleAddGoal} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+              <div className="input-group">
+                <label>Goal Name</label>
+                <input className="form-input" placeholder="e.g., New Laptop, Vacation" value={newGoal.name} onChange={e => setNewGoal({ ...newGoal, name: e.target.value })} required />
+              </div>
+              <div className="input-group">
+                <label>Target Amount (₹)</label>
+                <input className="form-input" type="number" placeholder="Enter amount" value={newGoal.targetAmount} onChange={e => setNewGoal({ ...newGoal, targetAmount: e.target.value })} required />
+              </div>
+              <div className="grid-2">
+                <div className="input-group">
+                  <label>Icon</label>
+                  <select className="form-input" value={newGoal.icon} onChange={e => setNewGoal({ ...newGoal, icon: e.target.value })}>
+                    <option value="🎯">🎯 Goal</option>
+                    <option value="💻">💻 Tech</option>
+                    <option value="✈️">✈️ Travel</option>
+                    <option value="🚗">🚗 Car</option>
+                    <option value="🏠">🏠 House</option>
+                    <option value="💰">💰 Savings</option>
+                  </select>
+                </div>
+                <div className="input-group">
+                  <label>Theme Color</label>
+                  <input className="form-input" type="color" value={newGoal.color} onChange={e => setNewGoal({ ...newGoal, color: e.target.value })} style={{ height: 42, padding: 2 }} />
+                </div>
+              </div>
+              <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end', marginTop: 10 }}>
+                <button type="button" className="btn btn-secondary" onClick={() => setShowGoalModal(false)}>Cancel</button>
+                <button type="submit" className="btn btn-primary">Start Saving</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

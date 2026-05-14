@@ -20,20 +20,28 @@ exports.register = async (req, res) => {
       return res.status(400).json({ message: 'User already exists' });
     }
     const user = await User.create({ name, email, password });
-    await ActivityLog.create({ userId: user._id, action: 'REGISTER', details: 'New account created' });
+    
+    // Generate and send OTP
+    const otp = generateOTP();
+    user.otp = otp;
+    user.otpExpiry = new Date(Date.now() + 10 * 60 * 1000);
+    await user.save();
+
+    await ActivityLog.create({ userId: user._id, action: 'REGISTER', details: 'New account created (pending verification)' });
+
+    try {
+      await sendEmail({
+        email: user.email,
+        subject: 'CredFlow - Welcome & Verification',
+        message: `Welcome to CredFlow, ${user.name}!\n\nYour verification code is: ${otp}\n\nThis code is valid for 10 minutes.`
+      });
+    } catch (emailErr) {
+      console.error('Email send error:', emailErr);
+    }
 
     res.status(201).json({
-      _id: user._id,
-      name: user.name,
-      email: user.email,
-      role: user.role,
-      avatar: user.avatar,
-      phoneNumber: user.phoneNumber,
-      occupation: user.occupation,
-      bio: user.bio,
-      currency: user.currency,
-      monthlyBudget: user.monthlyBudget,
-      token: generateToken(user._id)
+      message: 'Registration successful. Please verify your email.',
+      email: user.email
     });
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -50,6 +58,9 @@ exports.login = async (req, res) => {
     const user = await User.findOne({ email });
     if (!user || !(await user.matchPassword(password))) {
       return res.status(401).json({ message: 'Invalid email or password' });
+    }
+    if (!user.isVerified) {
+      return res.status(403).json({ message: 'Please verify your email to login' });
     }
     await ActivityLog.create({ userId: user._id, action: 'LOGIN', details: 'User logged in' });
 
