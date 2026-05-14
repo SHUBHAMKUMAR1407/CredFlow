@@ -14,15 +14,15 @@ export default function AdminDashboard() {
       try {
         console.log('Fetching admin data...');
         const [statRes, userRes, actRes] = await Promise.all([
-          getAdminStats().catch(e => ({ data: null })), 
-          getAdminUsers().catch(e => ({ data: [] })), 
+          getAdminStats().catch(e => ({ data: null })),
+          getAdminUsers().catch(e => ({ data: [] })),
           getAdminActivity().catch(e => ({ data: [] }))
         ]);
-        
+
         if (statRes.data) setStats(statRes.data);
         if (userRes.data) setUsers(userRes.data);
         if (actRes.data) setActivities(actRes.data);
-        
+
         console.log('Admin data loaded successfully');
       } catch (err) {
         console.error('Admin fetch error:', err);
@@ -95,12 +95,12 @@ export default function AdminDashboard() {
                   <tr key={u._id}>
                     <td>{u.name}</td>
                     <td style={{ color: 'var(--text-muted)' }}>{u.email}</td>
-                    <td><span className="badge badge-income">{u.role}</span></td>
+                    <td><span className={`badge ${u.role === 'admin' ? 'badge-income' : 'badge-warning'}`}>{u.role}</span></td>
                     <td>
-                      <button 
+                      <button
                         onClick={() => handleDeleteUser(u._id)}
-                        className="btn-icon btn-delete" 
-                        style={{ width: 32, height: 32, borderRadius: 6, opacity: 0.8 }} 
+                        className="btn-icon btn-delete"
+                        style={{ width: 32, height: 32, borderRadius: 6, opacity: 0.8 }}
                         title="Delete User"
                       >
                         <Trash2 size={16} />

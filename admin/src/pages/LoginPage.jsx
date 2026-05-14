@@ -5,8 +5,8 @@ import { CreditCard, Mail, Lock, Eye, EyeOff, Sparkles, Shield, TrendingUp, Pigg
 import '../styles/auth.css';
 
 export default function LoginPage() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('demo@credflow.com');
+  const [password, setPassword] = useState('demo123');
   const [showPw, setShowPw] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
