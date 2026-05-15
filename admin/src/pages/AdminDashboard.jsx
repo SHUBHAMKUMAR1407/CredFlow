@@ -68,45 +68,67 @@ export default function AdminDashboard() {
       </div>
 
       <div className="grid-3" style={{ marginBottom: 24 }}>
-        <div className="glass-card">
-          <Users size={32} color="var(--accent)" style={{ marginBottom: 12 }} />
-          <div style={{ fontSize: '1.5rem', fontWeight: 700 }}>{stats?.totalUsers || 0}</div>
-          <div style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>Total Users</div>
+        <div className="stat-card" style={{ borderLeft: '5px solid var(--accent)' }}>
+          <div className="stat-icon" style={{ background: 'rgba(99, 102, 241, 0.1)', color: 'var(--accent)' }}>
+            <Users size={24} />
+          </div>
+          <div className="stat-info">
+            <h3>Total Users</h3>
+            <div className="stat-value">{stats?.totalUsers || 0}</div>
+          </div>
         </div>
-        <div className="glass-card">
-          <Activity size={32} color="var(--success)" style={{ marginBottom: 12 }} />
-          <div style={{ fontSize: '1.5rem', fontWeight: 700 }}>{stats?.totalTransactions || 0}</div>
-          <div style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>Total Transactions</div>
+        <div className="stat-card" style={{ borderLeft: '5px solid var(--success)' }}>
+          <div className="stat-icon" style={{ background: 'rgba(16, 185, 129, 0.1)', color: 'var(--success)' }}>
+            <Activity size={24} />
+          </div>
+          <div className="stat-info">
+            <h3>Total Transactions</h3>
+            <div className="stat-value">{stats?.totalTransactions || 0}</div>
+          </div>
         </div>
-        <div className="glass-card">
-          <Shield size={32} color="var(--warning)" style={{ marginBottom: 12 }} />
-          <div style={{ fontSize: '1.5rem', fontWeight: 700 }}>{stats?.avgCreditScore || 0}</div>
-          <div style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>Avg Credit Score</div>
+        <div className="stat-card" style={{ borderLeft: '5px solid var(--warning)' }}>
+          <div className="stat-icon" style={{ background: 'rgba(245, 158, 11, 0.1)', color: 'var(--warning)' }}>
+            <Shield size={24} />
+          </div>
+          <div className="stat-info">
+            <h3>Avg Credit Score</h3>
+            <div className="stat-value">{stats?.avgCreditScore || 0}</div>
+          </div>
         </div>
       </div>
 
       <div className="grid-2">
         <div className="glass-card">
-          <h3 style={{ marginBottom: 16 }}>User List</h3>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
+            <h3 style={{ fontSize: '1.1rem', fontWeight: 700 }}>User Management</h3>
+          </div>
           <div style={{ overflowX: 'auto' }}>
             <table className="data-table">
               <thead>
-                <tr><th>Name</th><th>Email</th><th>Role</th><th>Actions</th></tr>
+                <tr><th>User</th><th>Role</th><th style={{ textAlign: 'right' }}>Actions</th></tr>
               </thead>
               <tbody>
                 {users.map(u => (
                   <tr key={u._id}>
-                    <td>{u.name}</td>
-                    <td style={{ color: 'var(--text-muted)' }}>{u.email}</td>
-                    <td><span className={`badge ${u.role === 'admin' ? 'badge-income' : 'badge-warning'}`}>{u.role}</span></td>
                     <td>
+                      <div style={{ display: 'flex', flexDirection: 'column' }}>
+                        <span style={{ fontWeight: 600 }}>{u.name}</span>
+                        <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{u.email}</span>
+                      </div>
+                    </td>
+                    <td>
+                      <span className={`badge ${u.role === 'admin' ? 'badge-income' : 'badge-warning'}`} style={{ textTransform: 'capitalize' }}>
+                        {u.role}
+                      </span>
+                    </td>
+                    <td style={{ textAlign: 'right' }}>
                       <button
                         onClick={() => setUserToDelete(u)}
                         className="btn-icon btn-delete"
-                        style={{ width: 32, height: 32, borderRadius: 6, opacity: 0.8 }}
+                        style={{ background: 'var(--danger-bg)', color: 'var(--danger)', border: 'none' }}
                         title="Delete User"
                       >
-                        <Trash2 size={16} />
+                        <Trash2 size={14} />
                       </button>
                     </td>
                   </tr>
@@ -117,12 +139,28 @@ export default function AdminDashboard() {
         </div>
 
         <div className="glass-card">
-          <h3 style={{ marginBottom: 16 }}>Recent Activity</h3>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
+            <h3 style={{ fontSize: '1.1rem', fontWeight: 700 }}>System Activity</h3>
+          </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-            {activities.length === 0 ? <p className="text-muted">No recent activity.</p> : (
-              activities.slice(0, 10).map(act => (
-                <div key={act._id} style={{ fontSize: '0.9rem', padding: '8px 0', borderBottom: '1px solid var(--border-glass)' }}>
-                  <span style={{ fontWeight: 600 }}>{act.userId?.name || 'System'}</span>: {act.details || 'Performed action'}
+            {activities.length === 0 ? (
+              <div className="empty-state" style={{ padding: '40px 0' }}>
+                <p style={{ color: 'var(--text-muted)' }}>No recent activity logged.</p>
+              </div>
+            ) : (
+              activities.slice(0, 8).map(act => (
+                <div key={act._id} style={{ display: 'flex', gap: 12, padding: '12px', background: 'var(--bg-glass)', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-glass)' }}>
+                  <div style={{ width: 36, height: 36, borderRadius: '50%', background: 'var(--bg-tertiary)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                    <Activity size={16} color="var(--accent)" />
+                  </div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                    <div style={{ fontSize: '0.85rem', color: 'var(--text-primary)' }}>
+                      <span style={{ fontWeight: 700 }}>{act.userId?.name || 'System'}</span> {act.details || 'Performed an action'}
+                    </div>
+                    <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>
+                      {new Date(act.createdAt || Date.now()).toLocaleString()}
+                    </div>
+                  </div>
                 </div>
               ))
             )}

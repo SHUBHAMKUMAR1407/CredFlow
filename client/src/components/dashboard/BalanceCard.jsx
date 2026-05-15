@@ -6,7 +6,7 @@ export default function BalanceCard({ balance, income, expense, incomeChange, ex
   
   return (
     <div className="grid-4" style={{ marginBottom: 24 }}>
-      <div className="stat-card">
+      <div className="stat-card" style={{ borderLeft: '5px solid var(--accent)' }}>
         <div className="stat-icon" style={{ background: 'linear-gradient(135deg, var(--accent), var(--accent2))', color: '#fff' }}>
           <Wallet size={24} />
         </div>
@@ -15,7 +15,7 @@ export default function BalanceCard({ balance, income, expense, incomeChange, ex
           <div className="stat-value">{formatCurrency(balance || 0)}</div>
         </div>
       </div>
-      <div className="stat-card">
+      <div className="stat-card" style={{ borderLeft: '5px solid var(--success)' }}>
         <div className="stat-icon" style={{ background: 'var(--success-bg)', color: 'var(--success)' }}>
           <TrendingUp size={24} />
         </div>
@@ -27,7 +27,7 @@ export default function BalanceCard({ balance, income, expense, incomeChange, ex
           </div>
         </div>
       </div>
-      <div className="stat-card">
+      <div className="stat-card" style={{ borderLeft: '5px solid var(--danger)' }}>
         <div className="stat-icon" style={{ background: 'var(--danger-bg)', color: 'var(--danger)' }}>
           <TrendingDown size={24} />
         </div>
@@ -39,7 +39,7 @@ export default function BalanceCard({ balance, income, expense, incomeChange, ex
           </div>
         </div>
       </div>
-      <div className="stat-card">
+      <div className="stat-card" style={{ borderLeft: '5px solid var(--info)' }}>
         <div className="stat-icon" style={{ background: 'var(--info-bg)', color: 'var(--info)' }}>
           <TrendingUp size={24} />
         </div>

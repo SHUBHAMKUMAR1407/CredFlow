@@ -4,8 +4,9 @@ import { getTransactions, addTransaction, deleteTransaction, updateTransaction }
 import { CATEGORIES, getCategoryInfo } from '../utils/creditScoreUtils';
 import { formatCurrency } from '../utils/formatCurrency';
 import { formatDate } from '../utils/dateHelpers';
-import { Plus, Trash2, Search, Filter, Edit2 } from 'lucide-react';
+import { Plus, Trash2, Search, Filter, Edit2, Wallet, TrendingUp, TrendingDown } from 'lucide-react';
 import toast from 'react-hot-toast';
+import CustomSelect from '../components/common/CustomSelect';
 
 export default function TransactionsPage() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -85,6 +86,7 @@ export default function TransactionsPage() {
   };
 
   return (
+    <>
     <div className="animate-fade">
       <div className="page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div>
@@ -108,18 +110,30 @@ export default function TransactionsPage() {
             />
           </div>
           <div style={{ display: 'flex', gap: 12 }}>
-            <select className="filter-select" value={filters.type} onChange={e => setFilters({ ...filters, type: e.target.value })}>
-              <option value="">All Types</option>
-              <option value="income">Income</option>
-              <option value="expense">Expense</option>
-            </select>
+            <CustomSelect 
+              value={filters.type} 
+              onChange={val => setFilters({ ...filters, type: val })}
+              options={[
+                { value: '', label: 'All Types' },
+                { value: 'income', label: 'Income', icon: <TrendingUp size={14} />, color: 'var(--success)' },
+                { value: 'expense', label: 'Expense', icon: <TrendingDown size={14} />, color: 'var(--danger)' }
+              ]}
+            />
 
-            <select className="filter-select" value={filters.category} onChange={e => setFilters({ ...filters, category: e.target.value })}>
-              <option value="">All Categories</option>
-              {[...CATEGORIES.income, ...CATEGORIES.expense].map(c => (
-                <option key={c.value} value={c.value}>{c.icon} {c.label}</option>
-              ))}
-            </select>
+            <CustomSelect 
+              value={filters.category} 
+              onChange={val => setFilters({ ...filters, category: val })}
+              placeholder="All Categories"
+              options={[
+                { value: '', label: 'All Categories' },
+                ...[...CATEGORIES.income, ...CATEGORIES.expense].map(c => ({
+                  value: c.value,
+                  label: c.label,
+                  icon: c.icon,
+                  color: getCategoryInfo(c.value).color
+                }))
+              ]}
+            />
           </div>
         </div>
 
@@ -174,6 +188,7 @@ export default function TransactionsPage() {
           </div>
         )}
       </div>
+    </div>
 
       {showModal && (
         <div className="modal-overlay">
@@ -186,10 +201,14 @@ export default function TransactionsPage() {
               <div className="grid-2">
                 <div className="input-group">
                   <label>Type</label>
-                  <select className="form-input" value={formData.type} onChange={e => setFormData({ ...formData, type: e.target.value, category: CATEGORIES[e.target.value][0].value })}>
-                    <option value="expense">Expense</option>
-                    <option value="income">Income</option>
-                  </select>
+                  <CustomSelect 
+                    value={formData.type} 
+                    onChange={val => setFormData({ ...formData, type: val, category: CATEGORIES[val][0].value })}
+                    options={[
+                      { value: 'expense', label: 'Expense', icon: <TrendingDown size={14} />, color: 'var(--danger)' },
+                      { value: 'income', label: 'Income', icon: <TrendingUp size={14} />, color: 'var(--success)' }
+                    ]}
+                  />
                 </div>
                 <div className="input-group">
                   <label>Amount (₹)</label>
@@ -199,9 +218,16 @@ export default function TransactionsPage() {
               <div className="grid-2">
                 <div className="input-group">
                   <label>Category</label>
-                  <select className="form-input" value={formData.category} onChange={e => setFormData({ ...formData, category: e.target.value })}>
-                    {CATEGORIES[formData.type].map(c => <option key={c.value} value={c.value}>{c.icon} {c.label}</option>)}
-                  </select>
+                  <CustomSelect 
+                    value={formData.category} 
+                    onChange={val => setFormData({ ...formData, category: val })}
+                    options={CATEGORIES[formData.type].map(c => ({
+                      value: c.value,
+                      label: c.label,
+                      icon: c.icon,
+                      color: getCategoryInfo(c.value).color
+                    }))}
+                  />
                 </div>
                 <div className="input-group">
                   <label>Date</label>
@@ -214,12 +240,16 @@ export default function TransactionsPage() {
               </div>
               <div className="input-group">
                 <label>Payment Method</label>
-                <select className="form-input" value={formData.paymentMethod} onChange={e => setFormData({ ...formData, paymentMethod: e.target.value })}>
-                  <option value="upi">UPI</option>
-                  <option value="card">Card</option>
-                  <option value="cash">Cash</option>
-                  <option value="bank">Bank Transfer</option>
-                </select>
+                <CustomSelect 
+                  value={formData.paymentMethod} 
+                  onChange={val => setFormData({ ...formData, paymentMethod: val })}
+                  options={[
+                    { value: 'upi', label: 'UPI' },
+                    { value: 'card', label: 'Card' },
+                    { value: 'cash', label: 'Cash' },
+                    { value: 'bank', label: 'Bank Transfer' }
+                  ]}
+                />
               </div>
               <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end', marginTop: 10 }}>
                 <button type="button" className="btn btn-secondary" onClick={() => setShowModal(false)}>Cancel</button>
@@ -251,6 +281,6 @@ export default function TransactionsPage() {
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 }
