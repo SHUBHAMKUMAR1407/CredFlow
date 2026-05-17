@@ -34,7 +34,7 @@
 [data-theme="light"] {
   --bg-primary: #f0f2f5;
   --bg-secondary: #ffffff;
-  --bg-tertiary: #e5e7eb;
+  --bg-tertiary: #f1f5f9;
   --bg-card: rgba(255, 255, 255, 0.9);
   --bg-glass: rgba(255, 255, 255, 0.7);
   --border-glass: rgba(0, 0, 0, 0.08);
@@ -98,12 +98,11 @@ a {
 
 .app-main {
   flex: 1;
-  margin-left: var(--sidebar-w);
   transition: var(--transition);
 }
 
 .app-main.collapsed {
-  margin-left: var(--sidebar-collapsed);
+  margin-left: 0;
 }
 
 .app-content {
@@ -503,7 +502,7 @@ select.form-input {
 }
 
 .data-table tbody tr:hover td {
-  background: var(--bg-tertiary);
+  background: var(--bg-primary);
   border-color: transparent;
 }
 

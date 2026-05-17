@@ -93,7 +93,6 @@ export default function SmartFeaturesPage() {
           ) : (
             suggestions.map((s, i) => (
               <div key={i} className={`suggestion-card ${s.priority}`}>
-                <div className="suggestion-icon">{s.icon}</div>
                 <div className="suggestion-content">
                   <h4>{s.title}</h4>
                   <p>{s.message}</p>
@@ -139,9 +138,12 @@ export default function SmartFeaturesPage() {
               {goals.map(g => {
                 const pct = Math.min(100, (g.currentAmount / g.targetAmount) * 100);
                 return (
-                  <div key={g._id} className="glass-card savings-goal-card" style={{ padding: 16 }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 12 }}>
-                      <div className="goal-icon" style={{ margin: 0 }}>{g.icon}</div>
+                  <div key={g._id} className="glass-card savings-goal-card" style={{ padding: 20 }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 16 }}>
+                      <div>
+                        <div style={{ fontSize: '0.98rem', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: 4 }}>{g.name}</div>
+                        <div style={{ fontSize: '0.82rem', fontWeight: 600, color: g.color }}>{Math.round(pct)}% Complete</div>
+                      </div>
                       <div style={{ display: 'flex', gap: 4 }}>
                         <button 
                           onClick={() => handleEditGoal(g)} 
@@ -162,11 +164,6 @@ export default function SmartFeaturesPage() {
                           <Trash2 size={16} />
                         </button>
                       </div>
-                    </div>
-
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: 8 }}>
-                      <div className="goal-name" style={{ margin: 0 }}>{g.name}</div>
-                      <div style={{ fontSize: '0.8rem', fontWeight: 700, color: g.color }}>{Math.round(pct)}%</div>
                     </div>
 
                     <div className="progress-bar" style={{ height: 6, marginBottom: 8 }}>
@@ -201,26 +198,9 @@ export default function SmartFeaturesPage() {
               <label>Target Amount (₹)</label>
               <input className="form-input" type="number" placeholder="Enter amount" value={newGoal.targetAmount} onChange={e => setNewGoal({ ...newGoal, targetAmount: e.target.value })} required style={{ background: 'var(--bg-primary)' }} />
             </div>
-            <div className="grid-2">
-              <div className="input-group">
-                <label>Icon</label>
-                <CustomSelect 
-                  value={newGoal.icon} 
-                  onChange={val => setNewGoal({ ...newGoal, icon: val })}
-                  options={[
-                    { value: '🎯', label: 'Goal', icon: '🎯' },
-                    { value: '💻', label: 'Tech', icon: '💻' },
-                    { value: '✈️', label: 'Travel', icon: '✈️' },
-                    { value: '🚗', label: 'Car', icon: '🚗' },
-                    { value: '🏠', label: 'House', icon: '🏠' },
-                    { value: '💰', label: 'Savings', icon: '💰' }
-                  ]}
-                />
-              </div>
-              <div className="input-group">
-                <label>Theme Color</label>
-                <input className="form-input" type="color" value={newGoal.color} onChange={e => setNewGoal({ ...newGoal, color: e.target.value })} style={{ height: 42, padding: 2, background: 'var(--bg-primary)', cursor: 'pointer' }} />
-              </div>
+            <div className="input-group">
+              <label>Theme Color</label>
+              <input className="form-input" type="color" value={newGoal.color} onChange={e => setNewGoal({ ...newGoal, color: e.target.value })} style={{ height: 42, padding: 2, background: 'var(--bg-primary)', cursor: 'pointer' }} />
             </div>
             <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end', marginTop: 10 }}>
               <button type="button" className="btn btn-secondary" onClick={() => { setShowGoalModal(false); setIsEditingGoal(false); setEditGoalId(null); }} style={{ background: 'var(--bg-primary)' }}>Cancel</button>

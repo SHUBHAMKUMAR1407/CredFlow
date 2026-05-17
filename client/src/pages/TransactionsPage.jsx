@@ -159,8 +159,7 @@ export default function TransactionsPage() {
                   return (
                     <tr key={tx._id}>
                       <td>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                          <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 28, height: 28, borderRadius: 6, background: `${cat.color}20`, color: cat.color }}>{cat.icon}</span>
+                        <div style={{ fontWeight: 600, color: 'var(--text-primary)' }}>
                           {cat.label}
                         </div>
                       </td>

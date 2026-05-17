@@ -24,11 +24,8 @@ export default function RecentTransactions({ transactions }) {
           const cat = getCategoryInfo(tx.category);
           return (
             <div key={tx._id} className="transaction-item">
-              <div className="transaction-icon" style={{ background: `${cat.color}20`, color: cat.color }}>
-                {cat.icon}
-              </div>
               <div className="transaction-details">
-                <div className="tx-category">{cat.label}</div>
+                <div className="tx-category" style={{ fontWeight: 600, color: 'var(--text-primary)' }}>{cat.label}</div>
                 <div className="tx-desc">{tx.description || tx.paymentMethod}</div>
               </div>
               <div>

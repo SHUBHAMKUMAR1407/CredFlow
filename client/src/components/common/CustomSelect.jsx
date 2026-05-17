@@ -35,10 +35,7 @@ export default function CustomSelect({ value, onChange, options, placeholder = '
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: '6px', overflow: 'hidden' }}>
           {selectedOption ? (
-            <>
-              {selectedOption.icon && <span style={{ display: 'flex', alignItems: 'center', color: selectedOption.color || 'inherit' }}>{selectedOption.icon}</span>}
-              <span style={{ whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}>{selectedOption.label}</span>
-            </>
+            <span style={{ whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}>{selectedOption.label}</span>
           ) : (
             <span style={{ color: 'var(--text-muted)' }}>{placeholder}</span>
           )}
@@ -94,7 +91,6 @@ export default function CustomSelect({ value, onChange, options, placeholder = '
                 }
               }}
             >
-              {opt.icon && <span style={{ display: 'flex', alignItems: 'center', color: opt.color || 'inherit' }}>{opt.icon}</span>}
               {opt.label}
             </div>
           ))}
