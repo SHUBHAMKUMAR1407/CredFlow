@@ -64,6 +64,7 @@ export default function DashboardPage() {
   if (loading) return <div className="loader-container"><div className="spinner" /></div>;
 
   return (
+    <>
     <div className="animate-fade">
       <div className="page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div>
@@ -89,28 +90,29 @@ export default function DashboardPage() {
         <CreditScoreGauge score={score} />
         <RecentTransactions transactions={transactions} />
       </div>
+    </div>
 
-      {showConfirmModal && (
-        <div className="modal-overlay">
-          <div className="modal-content animate-scale" style={{ maxWidth: 400, textAlign: 'center', padding: '32px 24px' }}>
-            <div style={{ marginBottom: 24 }}>
-              <div style={{ width: 64, height: 64, background: 'rgba(245,158,11,0.1)', color: 'var(--warning)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}>
-                <AlertTriangle size={32} />
-              </div>
-              <h2 style={{ fontSize: '1.25rem', marginBottom: 8 }}>Reset Demo Data?</h2>
-              <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', lineHeight: 1.5 }}>
-                This will wipe your current transactions and budgets and replace them with demo data. This action is irreversible.
-              </p>
+    {showConfirmModal && (
+      <div className="modal-overlay">
+        <div className="modal-content animate-scale" style={{ maxWidth: 400, textAlign: 'center', padding: '32px 24px' }}>
+          <div style={{ marginBottom: 24 }}>
+            <div style={{ width: 64, height: 64, background: 'rgba(245,158,11,0.1)', color: 'var(--warning)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}>
+              <AlertTriangle size={32} />
             </div>
-            <div style={{ display: 'flex', gap: 12, justifyItems: 'center' }}>
-              <button className="btn btn-secondary" onClick={() => setShowConfirmModal(false)} style={{ flex: 1, justifyContent: 'center' }}>Cancel</button>
-              <button className="btn btn-primary" style={{ flex: 1, justifyContent: 'center' }} onClick={handleSeed}>
-                Yes, Reset
-              </button>
-            </div>
+            <h2 style={{ fontSize: '1.25rem', marginBottom: 8 }}>Reset Demo Data?</h2>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', lineHeight: 1.5 }}>
+              This will wipe your current transactions and budgets and replace them with demo data. This action is irreversible.
+            </p>
+          </div>
+          <div style={{ display: 'flex', gap: 12, justifyItems: 'center' }}>
+            <button className="btn btn-secondary" onClick={() => setShowConfirmModal(false)} style={{ flex: 1, justifyContent: 'center' }}>Cancel</button>
+            <button className="btn btn-primary" style={{ flex: 1, justifyContent: 'center' }} onClick={handleSeed}>
+              Yes, Reset
+            </button>
           </div>
         </div>
-      )}
-    </div>
+      </div>
+    )}
+    </>
   );
 }

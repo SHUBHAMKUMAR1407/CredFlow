@@ -3,6 +3,7 @@ import { getSuggestions, getSavingsGoals, createSavingsGoal, deleteSavingsGoal, 
 import { formatCurrency } from '../utils/formatCurrency';
 import { Lightbulb, Target, AlertTriangle, Plus, Trash2, X, Edit2 } from 'lucide-react';
 import toast from 'react-hot-toast';
+import CustomSelect from '../components/common/CustomSelect';
 
 export default function SmartFeaturesPage() {
   const [suggestions, setSuggestions] = useState([]);
@@ -13,6 +14,7 @@ export default function SmartFeaturesPage() {
   const [isEditingGoal, setIsEditingGoal] = useState(false);
   const [editGoalId, setEditGoalId] = useState(null);
   const [newGoal, setNewGoal] = useState({ name: '', targetAmount: '', icon: '🎯', color: '#6366f1' });
+  const [deleteGoalId, setDeleteGoalId] = useState(null);
 
   const fetchSmartData = async () => {
     try {
@@ -60,19 +62,23 @@ export default function SmartFeaturesPage() {
     setShowGoalModal(true);
   };
 
-  const handleDeleteGoal = async (id) => {
+  const confirmDeleteGoal = async () => {
+    if (!deleteGoalId) return;
     try {
-      await deleteSavingsGoal(id);
-      toast.success('Goal removed');
+      await deleteSavingsGoal(deleteGoalId);
+      toast.success('Savings goal removed');
       fetchSmartData();
     } catch (err) {
       toast.error('Failed to remove goal');
+    } finally {
+      setDeleteGoalId(null);
     }
   };
 
   if (loading) return <div className="loader-container"><div className="spinner" /></div>;
 
   return (
+    <>
     <div className="animate-fade">
       <div className="page-header">
         <h1>Smart Intelligence</h1>
@@ -136,12 +142,24 @@ export default function SmartFeaturesPage() {
                   <div key={g._id} className="glass-card savings-goal-card" style={{ padding: 16 }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 12 }}>
                       <div className="goal-icon" style={{ margin: 0 }}>{g.icon}</div>
-                      <div style={{ display: 'flex', gap: 6 }}>
-                        <button className="btn-icon" style={{ width: 24, height: 24, borderRadius: 6, opacity: 0.7 }} onClick={() => handleEditGoal(g)} title="Edit Goal">
-                          <Edit2 size={12} />
+                      <div style={{ display: 'flex', gap: 4 }}>
+                        <button 
+                          onClick={() => handleEditGoal(g)} 
+                          title="Edit Goal"
+                          style={{ background: 'transparent', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '6px', borderRadius: '6px', transition: 'all 0.2s' }}
+                          onMouseEnter={e => { e.currentTarget.style.color = 'var(--accent)'; e.currentTarget.style.background = 'var(--bg-glass)'; }}
+                          onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-muted)'; e.currentTarget.style.background = 'transparent'; }}
+                        >
+                          <Edit2 size={16} />
                         </button>
-                        <button className="btn-icon btn-delete" style={{ width: 24, height: 24, borderRadius: 6, opacity: 0.7 }} onClick={() => handleDeleteGoal(g._id)} title="Delete Goal">
-                          <X size={12} />
+                        <button 
+                          onClick={() => setDeleteGoalId(g._id)} 
+                          title="Delete Goal"
+                          style={{ background: 'transparent', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '6px', borderRadius: '6px', transition: 'all 0.2s' }}
+                          onMouseEnter={e => { e.currentTarget.style.color = 'var(--danger)'; e.currentTarget.style.background = 'var(--bg-glass)'; }}
+                          onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-muted)'; e.currentTarget.style.background = 'transparent'; }}
+                        >
+                          <Trash2 size={16} />
                         </button>
                       </div>
                     </div>
@@ -165,48 +183,75 @@ export default function SmartFeaturesPage() {
           )}
         </div>
       </div>
+    </div>
 
-      {showGoalModal && (
-        <div className="modal-overlay">
-          <div className="modal-content animate-scale">
-            <div className="modal-header">
-              <h2>Add Savings Goal</h2>
-              <button className="modal-close" onClick={() => setShowGoalModal(false)}>×</button>
+    {showGoalModal && (
+      <div className="modal-overlay">
+        <div className="modal-content animate-scale">
+          <div className="modal-header">
+            <h2>{isEditingGoal ? 'Edit Savings Goal' : 'Add Savings Goal'}</h2>
+            <button className="modal-close" onClick={() => { setShowGoalModal(false); setIsEditingGoal(false); setEditGoalId(null); }}>×</button>
+          </div>
+          <form onSubmit={handleAddGoal} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+            <div className="input-group">
+              <label>Goal Name</label>
+              <input className="form-input" placeholder="e.g., New Laptop, Vacation" value={newGoal.name} onChange={e => setNewGoal({ ...newGoal, name: e.target.value })} required style={{ background: 'var(--bg-primary)' }} />
             </div>
-            <form onSubmit={handleAddGoal} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+            <div className="input-group">
+              <label>Target Amount (₹)</label>
+              <input className="form-input" type="number" placeholder="Enter amount" value={newGoal.targetAmount} onChange={e => setNewGoal({ ...newGoal, targetAmount: e.target.value })} required style={{ background: 'var(--bg-primary)' }} />
+            </div>
+            <div className="grid-2">
               <div className="input-group">
-                <label>Goal Name</label>
-                <input className="form-input" placeholder="e.g., New Laptop, Vacation" value={newGoal.name} onChange={e => setNewGoal({ ...newGoal, name: e.target.value })} required />
+                <label>Icon</label>
+                <CustomSelect 
+                  value={newGoal.icon} 
+                  onChange={val => setNewGoal({ ...newGoal, icon: val })}
+                  options={[
+                    { value: '🎯', label: 'Goal', icon: '🎯' },
+                    { value: '💻', label: 'Tech', icon: '💻' },
+                    { value: '✈️', label: 'Travel', icon: '✈️' },
+                    { value: '🚗', label: 'Car', icon: '🚗' },
+                    { value: '🏠', label: 'House', icon: '🏠' },
+                    { value: '💰', label: 'Savings', icon: '💰' }
+                  ]}
+                />
               </div>
               <div className="input-group">
-                <label>Target Amount (₹)</label>
-                <input className="form-input" type="number" placeholder="Enter amount" value={newGoal.targetAmount} onChange={e => setNewGoal({ ...newGoal, targetAmount: e.target.value })} required />
+                <label>Theme Color</label>
+                <input className="form-input" type="color" value={newGoal.color} onChange={e => setNewGoal({ ...newGoal, color: e.target.value })} style={{ height: 42, padding: 2, background: 'var(--bg-primary)', cursor: 'pointer' }} />
               </div>
-              <div className="grid-2">
-                <div className="input-group">
-                  <label>Icon</label>
-                  <select className="form-input" value={newGoal.icon} onChange={e => setNewGoal({ ...newGoal, icon: e.target.value })}>
-                    <option value="🎯">🎯 Goal</option>
-                    <option value="💻">💻 Tech</option>
-                    <option value="✈️">✈️ Travel</option>
-                    <option value="🚗">🚗 Car</option>
-                    <option value="🏠">🏠 House</option>
-                    <option value="💰">💰 Savings</option>
-                  </select>
-                </div>
-                <div className="input-group">
-                  <label>Theme Color</label>
-                  <input className="form-input" type="color" value={newGoal.color} onChange={e => setNewGoal({ ...newGoal, color: e.target.value })} style={{ height: 42, padding: 2 }} />
-                </div>
-              </div>
-              <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end', marginTop: 10 }}>
-                <button type="button" className="btn btn-secondary" onClick={() => setShowGoalModal(false)}>Cancel</button>
-                <button type="submit" className="btn btn-primary">Start Saving</button>
-              </div>
-            </form>
+            </div>
+            <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end', marginTop: 10 }}>
+              <button type="button" className="btn btn-secondary" onClick={() => { setShowGoalModal(false); setIsEditingGoal(false); setEditGoalId(null); }} style={{ background: 'var(--bg-primary)' }}>Cancel</button>
+              <button type="submit" className="btn btn-primary">{isEditingGoal ? 'Update Goal' : 'Start Saving'}</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    )}
+
+    {deleteGoalId && (
+      <div className="modal-overlay">
+        <div className="modal-content animate-scale" style={{ maxWidth: 400, textAlign: 'center', padding: '32px 24px' }}>
+          <div style={{ marginBottom: 24 }}>
+            <div style={{ width: 64, height: 64, background: 'rgba(245, 158, 11, 0.1)', color: 'var(--warning)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}>
+              <Trash2 size={32} />
+            </div>
+            <h2 style={{ fontSize: '1.25rem', marginBottom: 8 }}>Delete Savings Goal?</h2>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', lineHeight: 1.5 }}>
+              This action cannot be undone. Are you sure you want to permanently delete this savings goal?
+            </p>
+          </div>
+          <div style={{ display: 'flex', gap: 12, justifyItems: 'center' }}>
+            <button className="btn btn-secondary" onClick={() => setDeleteGoalId(null)} style={{ flex: 1, justifyContent: 'center', background: 'var(--bg-primary)' }}>Cancel</button>
+            <button className="btn" style={{ background: 'var(--warning)', color: 'white', flex: 1, justifyContent: 'center', border: 'none' }} onClick={confirmDeleteGoal}>
+              Yes, Delete
+            </button>
           </div>
         </div>
-      )}
-    </div>
+      </div>
+    )}
+    </>
   );
 }
