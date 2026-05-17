@@ -67,18 +67,23 @@ export default function Sidebar({ collapsed, setCollapsed }) {
           <div className="avatar" style={{ cursor: 'pointer' }} onClick={() => setShowProfile(true)} title="Edit Profile">
             {user?.name?.charAt(0)?.toUpperCase()}
           </div>
-          <div className="user-info">
-            <div className="user-name">{user?.name}</div>
-            <div className="user-email">{user?.email}</div>
-          </div>
-          <div className="sidebar-footer-actions" style={{ marginLeft: 'auto', display: 'flex', gap: 4 }}>
-            <button className="sidebar-toggle" onClick={() => setShowProfile(true)} title="Settings">
-              <Settings size={16} />
+          {collapsed ? (
+            <button className="sidebar-toggle" onClick={handleLogout} title="Logout" style={{ margin: 0, padding: '8px' }}>
+              <LogOut size={24} style={{ color: 'var(--danger)', strokeWidth: 2.2 }} />
             </button>
-            <button className="sidebar-toggle" onClick={handleLogout} title="Logout">
-              <LogOut size={16} />
-            </button>
-          </div>
+          ) : (
+            <>
+              <div className="user-info">
+                <div className="user-name">{user?.name}</div>
+                <div className="user-email">{user?.email}</div>
+              </div>
+              <div className="sidebar-footer-actions" style={{ marginLeft: 'auto', display: 'flex' }}>
+                <button className="sidebar-toggle" onClick={handleLogout} title="Logout">
+                  <LogOut size={16} />
+                </button>
+              </div>
+            </>
+          )}
         </div>
       </aside>
 

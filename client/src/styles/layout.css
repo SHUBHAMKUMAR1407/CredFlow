@@ -183,10 +183,11 @@
 }
 
 .sidebar.collapsed .sidebar-footer {
-  padding: 20px 0;
+  padding: 12px 0 24px 0;
   flex-direction: column;
   justify-content: center;
-  gap: 16px;
+  align-items: center;
+  gap: 8px;
 }
 
 .avatar {

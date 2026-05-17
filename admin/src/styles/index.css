@@ -69,8 +69,8 @@ a { color: var(--accent); text-decoration: none; }
 
 /* ── Layout ── */
 .app-layout { display: flex; min-height: 100vh; }
-.app-main { flex: 1; margin-left: var(--sidebar-w); transition: var(--transition); }
-.app-main.collapsed { margin-left: var(--sidebar-collapsed); }
+.app-main { flex: 1; transition: var(--transition); }
+.app-main.collapsed { margin-left: 0; }
 .app-content { padding: 24px 32px; padding-top: calc(var(--topbar-h) + 24px); min-height: 100vh; }
 
 /* ── Cards ── */

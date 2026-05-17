@@ -144,7 +144,7 @@ export default function Sidebar({ collapsed, setCollapsed }) {
           </div>
           {collapsed ? (
             <button className="sidebar-toggle" onClick={handleLogout} title="Logout" style={{ margin: 0, padding: '8px' }}>
-              <LogOut size={20} style={{ color: 'var(--danger)' }} />
+              <LogOut size={24} style={{ color: 'var(--danger)', strokeWidth: 2.2 }} />
             </button>
           ) : (
             <>
@@ -152,10 +152,7 @@ export default function Sidebar({ collapsed, setCollapsed }) {
                 <div className="user-name">{user?.name}</div>
                 <div className="user-email">{user?.email}</div>
               </div>
-              <div style={{ marginLeft: 'auto', display: 'flex', gap: 4 }}>
-                <button className="sidebar-toggle" onClick={() => setShowProfile(true)} title="Settings">
-                  <Settings size={16} />
-                </button>
+              <div style={{ marginLeft: 'auto', display: 'flex' }}>
                 <button className="sidebar-toggle" onClick={handleLogout} title="Logout">
                   <LogOut size={16} />
                 </button>

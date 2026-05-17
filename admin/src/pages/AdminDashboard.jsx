@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { getAdminUsers, getAdminStats, getAdminActivity, deleteUser } from '../services/api';
 import { Users, Activity, Shield, Trash2 } from 'lucide-react';
 import toast from 'react-hot-toast';
@@ -61,6 +62,7 @@ export default function AdminDashboard() {
   }
 
   return (
+    <>
     <div className="animate-fade">
       <div className="page-header">
         <h1>Admin Control Panel</h1>
@@ -167,29 +169,30 @@ export default function AdminDashboard() {
           </div>
         </div>
       </div>
+    </div>
 
-      {userToDelete && (
-        <div className="modal-overlay">
-          <div className="modal-content animate-scale" style={{ maxWidth: 400, textAlign: 'center', padding: '32px 24px' }}>
-            <div style={{ marginBottom: 24 }}>
-              <div style={{ width: 64, height: 64, background: 'rgba(239,68,68,0.1)', color: 'var(--danger)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}>
-                <Trash2 size={32} />
-              </div>
-              <h2 style={{ fontSize: '1.25rem', marginBottom: 8 }}>Delete User?</h2>
-              <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', lineHeight: 1.5 }}>
-                Are you sure you want to permanently delete <strong>{userToDelete.name}</strong> ({userToDelete.email})? This action cannot be undone.
-              </p>
+    {userToDelete && createPortal(
+      <div className="modal-overlay">
+        <div className="modal-content animate-scale" style={{ maxWidth: 400, textAlign: 'center', padding: '32px 24px' }}>
+          <div style={{ marginBottom: 24 }}>
+            <div style={{ width: 64, height: 64, background: 'rgba(245, 158, 11, 0.1)', color: 'var(--warning)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}>
+              <Trash2 size={32} />
             </div>
-            <div style={{ display: 'flex', gap: 12, justifyItems: 'center' }}>
-              <button className="btn btn-secondary" onClick={() => setUserToDelete(null)} style={{ flex: 1, justifyContent: 'center' }}>Cancel</button>
-              <button className="btn btn-danger" style={{ flex: 1, justifyContent: 'center' }} onClick={confirmDeleteUser}>
-                Yes, Delete
-              </button>
-            </div>
+            <h2 style={{ fontSize: '1.25rem', marginBottom: 8 }}>Delete User?</h2>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', lineHeight: 1.5 }}>
+              Are you sure you want to permanently delete <strong>{userToDelete.name}</strong> ({userToDelete.email})? This action cannot be undone.
+            </p>
+          </div>
+          <div style={{ display: 'flex', gap: 12, justifyItems: 'center' }}>
+            <button className="btn btn-secondary" onClick={() => setUserToDelete(null)} style={{ flex: 1, justifyContent: 'center' }}>Cancel</button>
+            <button className="btn" style={{ background: 'var(--warning)', color: 'white', flex: 1, justifyContent: 'center', border: 'none', fontWeight: 600 }} onClick={confirmDeleteUser}>
+              Yes, Delete
+            </button>
           </div>
         </div>
-      )}
-
-    </div>
+      </div>,
+      document.body
+    )}
+    </>
   );
 }
