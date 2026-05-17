@@ -69,7 +69,7 @@ export default function Sidebar({ collapsed, setCollapsed }) {
           </div>
           {collapsed ? (
             <button className="sidebar-toggle" onClick={handleLogout} title="Logout" style={{ margin: 0, padding: '8px' }}>
-              <LogOut size={24} style={{ color: 'var(--danger)', strokeWidth: 2.2 }} />
+              <LogOut size={24} style={{ color: 'var(--warning)', strokeWidth: 2.2 }} />
             </button>
           ) : (
             <>

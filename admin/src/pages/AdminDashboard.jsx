@@ -119,18 +119,17 @@ export default function AdminDashboard() {
                       </div>
                     </td>
                     <td>
-                      <span className={`badge ${u.role === 'admin' ? 'badge-income' : 'badge-warning'}`} style={{ textTransform: 'capitalize' }}>
+                      <span className={`badge ${u.role === 'admin' ? 'badge-admin' : 'badge-user'}`} style={{ textTransform: 'capitalize' }}>
                         {u.role}
                       </span>
                     </td>
                     <td style={{ textAlign: 'right' }}>
                       <button
                         onClick={() => setUserToDelete(u)}
-                        className="btn-icon btn-delete"
-                        style={{ background: 'var(--danger-bg)', color: 'var(--danger)', border: 'none' }}
+                        className="btn-icon btn-warning"
                         title="Delete User"
                       >
-                        <Trash2 size={14} />
+                        <Trash2 size={16} />
                       </button>
                     </td>
                   </tr>

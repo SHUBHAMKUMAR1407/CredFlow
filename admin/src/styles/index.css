@@ -131,7 +131,34 @@ a { color: var(--accent); text-decoration: none; }
 .btn-danger:hover { background: var(--danger); color: #fff; }
 .btn-success { background: var(--success-bg); color: var(--success); }
 .btn-sm { padding: 6px 12px; font-size: 0.8rem; }
-.btn-icon { width: 36px; height: 36px; padding: 0; border-radius: 8px; }
+.btn-icon {
+  width: 36px; height: 36px; padding: 0; border-radius: 8px;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--bg-tertiary); border: 1px solid var(--border-glass);
+  color: var(--text-secondary); cursor: pointer; transition: var(--transition);
+}
+.btn-icon:hover {
+  background: var(--bg-glass); border-color: var(--accent);
+  color: var(--accent); transform: translateY(-1px);
+}
+.btn-icon.btn-delete {
+  background: var(--danger-bg); color: var(--danger); border-color: transparent;
+}
+.btn-icon.btn-delete:hover {
+  background: var(--danger); color: #fff;
+  border-color: var(--danger);
+  box-shadow: 0 4px 12px rgba(239,68,68,0.3);
+  transform: translateY(-2px) scale(1.05);
+}
+.btn-icon.btn-warning {
+  background: var(--warning-bg); color: var(--warning); border-color: transparent;
+}
+.btn-icon.btn-warning:hover {
+  background: var(--warning); color: #fff;
+  border-color: var(--warning);
+  box-shadow: 0 4px 12px rgba(245,158,11,0.3);
+  transform: translateY(-2px) scale(1.05);
+}
 
 /* ── Inputs ── */
 .input-group { display: flex; flex-direction: column; gap: 6px; }
@@ -165,20 +192,23 @@ select.form-input { cursor: pointer; appearance: none; background-image: url("da
 .modal-close { background: none; border: none; color: var(--text-secondary); cursor: pointer; font-size: 1.2rem; padding: 4px; }
 
 /* ── Table ── */
-.data-table { width: 100%; border-collapse: collapse; }
-.data-table th { text-align: left; padding: 12px 16px; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); border-bottom: 1px solid var(--border-glass); font-weight: 600; }
-.data-table td { padding: 14px 16px; border-bottom: 1px solid var(--border-glass); font-size: 0.9rem; transition: var(--transition); }
-.data-table tbody tr { transition: var(--transition); border-radius: 8px; }
-.data-table tbody tr:hover { background: var(--bg-glass); }
-.data-table tbody tr:hover td { border-color: var(--border-glass); }
+.data-table { width: 100%; border-collapse: separate; border-spacing: 0; }
+.data-table th { text-align: left; padding: 14px 16px; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); border-bottom: 2px solid var(--border-glass); font-weight: 700; }
+.data-table td { padding: 16px 16px; border-bottom: 1px solid var(--border-glass); font-size: 0.9rem; transition: var(--transition); }
+.data-table tbody tr { transition: var(--transition); position: relative; }
+.data-table tbody tr:last-child td { border-bottom: none; }
+.data-table tbody tr:hover { transform: translateX(4px); }
+.data-table tbody tr:hover td { background: var(--bg-tertiary); border-color: transparent; }
 .data-table tbody tr:hover td:first-child { border-top-left-radius: 8px; border-bottom-left-radius: 8px; }
 .data-table tbody tr:hover td:last-child { border-top-right-radius: 8px; border-bottom-right-radius: 8px; }
 
 /* ── Badge ── */
-.badge { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
+.badge { display: inline-flex; align-items: center; gap: 4px; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.3px; }
 .badge-income { background: var(--success-bg); color: var(--success); }
 .badge-expense { background: var(--danger-bg); color: var(--danger); }
 .badge-warning { background: var(--warning-bg); color: var(--warning); }
+.badge-user { background: rgba(99, 102, 241, 0.15); color: var(--accent); border: 1px solid rgba(99, 102, 241, 0.25); }
+.badge-admin { background: rgba(16, 185, 129, 0.15); color: var(--success); border: 1px solid rgba(16, 185, 129, 0.25); }
 
 /* ── Page Header ── */
 .page-header { margin-bottom: 28px; }
