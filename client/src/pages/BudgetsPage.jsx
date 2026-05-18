@@ -126,7 +126,7 @@ export default function BudgetsPage() {
   return (
     <>
     <div className="animate-fade">
-      <div className="page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 32 }}>
+      <div className="page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 32, flexWrap: 'wrap', gap: 16 }}>
         <div>
           <h1>Budget Management</h1>
           <p>Set and monitor monthly spending limits by category.</p>
@@ -138,20 +138,20 @@ export default function BudgetsPage() {
 
       {budgets.length > 0 && (
         <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 24, marginBottom: 32 }}>
-          <div className="glass-card animate-scale" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '24px 32px', borderLeft: '4px solid var(--accent)' }}>
+          <div className="glass-card animate-scale" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '24px 32px', borderLeft: '4px solid var(--accent)', flexWrap: 'wrap', gap: 20 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 24 }}>
               <div style={{ width: 64, height: 64, borderRadius: '16px', background: 'rgba(99, 102, 241, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--accent)', border: '1px solid rgba(99, 102, 241, 0.2)' }}>
                 <PieChart size={32} />
               </div>
               <div>
                 <h3 style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: 600 }}>Total Monthly Budget</h3>
-                <div style={{ fontSize: '2.2rem', fontWeight: 800, color: 'var(--text-primary)', display: 'flex', alignItems: 'baseline', gap: 8 }}>
+                <div style={{ fontSize: '2.2rem', fontWeight: 800, color: 'var(--text-primary)', display: 'flex', alignItems: 'baseline', gap: 8, flexWrap: 'wrap' }}>
                   {formatCurrency(totalSpent)} 
                   <span style={{ fontSize: '1.1rem', color: 'var(--text-muted)', fontWeight: 500 }}>/ {formatCurrency(totalLimit)}</span>
                 </div>
               </div>
             </div>
-            <div style={{ width: '30%', minWidth: '200px' }}>
+            <div style={{ flex: '1 1 200px', minWidth: '200px', maxWidth: '400px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8, fontSize: '0.9rem', fontWeight: 600 }}>
                 <span style={{ color: 'var(--text-secondary)' }}>Utilization</span>
                 <span style={{ color: totalPct >= 100 ? 'var(--danger)' : totalPct >= 80 ? 'var(--warning)' : 'var(--success)' }}>
@@ -174,7 +174,7 @@ export default function BudgetsPage() {
       )}
 
       {budgets.length > 0 && (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 16, marginBottom: 32 }}>
+        <div className="grid-4" style={{ marginBottom: 32 }}>
           <div className="glass-card" style={{ padding: '16px', display: 'flex', flexDirection: 'column', gap: 4, background: 'rgba(255, 255, 255, 0.4)' }}>
             <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 600 }}>Highest Budget</span>
             <span style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--text-primary)' }}>

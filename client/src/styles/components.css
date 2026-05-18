@@ -103,3 +103,42 @@
 .loader-container { display: flex; align-items: center; justify-content: center; min-height: 400px; }
 .spinner { width: 40px; height: 40px; border: 3px solid var(--bg-tertiary); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Component Responsiveness ── */
+@media (max-width: 600px) {
+  .filter-bar {
+    flex-direction: column;
+    gap: 12px;
+  }
+  .filter-bar > div {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+  .filter-bar .form-input,
+  .filter-bar .custom-select {
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+
+  .score-factor {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .score-factor .factor-label {
+    width: calc(100% - 60px);
+  }
+  .score-factor .factor-value {
+    width: 50px;
+    text-align: right;
+  }
+  .score-factor .factor-bar {
+    width: 100%;
+    flex: none;
+  }
+
+  .suggestion-card {
+    padding: 12px;
+    flex-direction: column;
+    gap: 8px;
+  }
+}

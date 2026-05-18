@@ -104,7 +104,7 @@ export default function AdminDashboard() {
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
             <h3 style={{ fontSize: '1.1rem', fontWeight: 700 }}>User Management</h3>
           </div>
-          <div style={{ overflowX: 'auto' }}>
+          <div className="table-responsive">
             <table className="data-table">
               <thead>
                 <tr><th>User</th><th>Role</th><th style={{ textAlign: 'right' }}>Actions</th></tr>

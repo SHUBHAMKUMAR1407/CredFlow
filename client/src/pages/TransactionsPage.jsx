@@ -88,7 +88,7 @@ export default function TransactionsPage() {
   return (
     <>
     <div className="animate-fade">
-      <div className="page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <div className="page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 16 }}>
         <div>
           <h1>Transactions</h1>
           <p>Manage your income and expenses.</p>
@@ -100,16 +100,16 @@ export default function TransactionsPage() {
 
       <div className="glass-card" style={{ padding: '20px' }}>
         <div className="filter-bar">
-          <div className="input-group" style={{ flexDirection: 'row', alignItems: 'center', background: 'var(--bg-tertiary)', padding: '6px 12px', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-glass)' }}>
+          <div className="input-group" style={{ flexDirection: 'row', alignItems: 'center', background: 'var(--bg-tertiary)', padding: '6px 12px', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-glass)', flex: 1 }}>
             <Search size={16} color="var(--text-muted)" />
             <input
-              style={{ background: 'none', border: 'none', color: 'var(--text-primary)', outline: 'none', marginLeft: 8 }}
+              style={{ background: 'none', border: 'none', color: 'var(--text-primary)', outline: 'none', marginLeft: 8, width: '100%' }}
               placeholder="Search..."
               value={filters.search}
               onChange={e => setFilters({ ...filters, search: e.target.value })}
             />
           </div>
-          <div style={{ display: 'flex', gap: 12 }}>
+          <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
             <CustomSelect 
               value={filters.type} 
               onChange={val => setFilters({ ...filters, type: val })}
@@ -138,7 +138,7 @@ export default function TransactionsPage() {
         </div>
 
         {loading ? <div className="loader-container"><div className="spinner" /></div> : (
-          <div style={{ overflowX: 'auto' }}>
+          <div className="table-responsive">
             <table className="data-table">
               <thead>
                 <tr>

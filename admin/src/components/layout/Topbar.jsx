@@ -1,12 +1,15 @@
-import { Search, Bell, Sun, Moon } from 'lucide-react';
+import { Search, Bell, Sun, Moon, Menu } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
 
-export default function Topbar({ collapsed }) {
+export default function Topbar({ collapsed, setMobileOpen }) {
   const { theme, toggleTheme } = useTheme();
 
   return (
     <header className={`topbar ${collapsed ? 'collapsed' : ''}`}>
       <div className="topbar-left">
+        <button className="mobile-menu-btn" onClick={() => setMobileOpen(true)} title="Open Menu" style={{ padding: 8 }}>
+          <Menu size={20} />
+        </button>
         <div className="topbar-search">
           <Search size={16} style={{ color: 'var(--text-muted)', flexShrink: 0 }} />
           <input placeholder="Search transactions, reports..." />

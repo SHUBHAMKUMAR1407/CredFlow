@@ -5,7 +5,7 @@ import { LayoutDashboard, Users, LogOut, CreditCard, Settings, ChevronLeft, Chev
 import { updateProfile } from '../../services/api';
 import toast from 'react-hot-toast';
 
-export default function Sidebar({ collapsed, setCollapsed }) {
+export default function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobileOpen }) {
   const navigate = useNavigate();
   const location = useLocation();
   const { user, logout, updateUserData } = useAuth();
@@ -40,7 +40,7 @@ export default function Sidebar({ collapsed, setCollapsed }) {
 
   return (
     <>
-      <aside className={`sidebar ${collapsed ? 'collapsed' : ''}`}>
+      <aside className={`sidebar ${collapsed ? 'collapsed' : ''} ${mobileOpen ? 'mobile-open' : ''}`}>
         <div className="sidebar-header">
           <CreditCard size={24} style={{ color: '#6366f1', flexShrink: 0 }} />
           <span className="sidebar-logo">CredAdmin</span>
@@ -52,11 +52,11 @@ export default function Sidebar({ collapsed, setCollapsed }) {
         <nav className="sidebar-nav">
           <div className="nav-section">
             <div className="nav-section-title">Admin Management</div>
-            <button className={`nav-item ${location.pathname === '/dashboard' ? 'active' : ''}`} onClick={() => navigate('/dashboard')}>
+            <button className={`nav-item ${location.pathname === '/dashboard' ? 'active' : ''}`} onClick={() => { navigate('/dashboard'); if (setMobileOpen) setMobileOpen(false); }}>
               <LayoutDashboard className="nav-icon" size={20} />
               <span className="nav-label">Dashboard</span>
             </button>
-            <button className={`nav-item ${location.pathname === '/settings' ? 'active' : ''}`} onClick={() => navigate('/settings')}>
+            <button className={`nav-item ${location.pathname === '/settings' ? 'active' : ''}`} onClick={() => { navigate('/settings'); if (setMobileOpen) setMobileOpen(false); }}>
               <Settings className="nav-icon" size={20} />
               <span className="nav-label">Settings</span>
             </button>

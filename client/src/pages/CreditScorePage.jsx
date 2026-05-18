@@ -115,7 +115,7 @@ export default function CreditScorePage() {
 
   return (
     <div className="animate-fade">
-      <div className="page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <div className="page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 16 }}>
         <div>
           <h1>AI Credit Score</h1>
           <p>Your intelligent financial health indicator.</p>
@@ -144,20 +144,20 @@ export default function CreditScorePage() {
           <ShieldCheck size={22} color="var(--accent)" /> 
           Score Factors Breakdown
         </h3>
-        <div className="score-factors" style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+        <div className="score-factors">
           {Object.entries(scoreData?.factors || {}).map(([key, factor]) => {
             const labels = { paymentConsistency: 'Payment History', incomeStability: 'Income Stability', savingsRatio: 'Savings Rate', spendingDiscipline: 'Spending Control', accountAge: 'Account Age' };
             const pct = (factor.score / factor.max) * 100;
             const color = pct >= 80 ? 'var(--success)' : pct >= 50 ? 'var(--warning)' : 'var(--danger)';
             return (
-              <div key={key} style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-                <div style={{ width: '150px', fontSize: '0.9rem', color: 'var(--text-secondary)', fontWeight: 500 }}>
+              <div key={key} className="score-factor">
+                <div className="factor-label">
                   {labels[key]}
                 </div>
-                <div style={{ flex: 1, height: '10px', background: 'var(--bg-tertiary)', borderRadius: '6px', overflow: 'hidden' }}>
-                  <div style={{ height: '100%', width: `${pct}%`, background: color, borderRadius: '6px', transition: 'width 1.5s cubic-bezier(0.4, 0, 0.2, 1)' }} />
+                <div className="factor-bar">
+                  <div className="factor-fill" style={{ width: `${pct}%`, background: color }} />
                 </div>
-                <div style={{ fontSize: '0.9rem', fontWeight: 700, color, minWidth: '45px', textAlign: 'right' }}>
+                <div className="factor-value" style={{ color }}>
                   {factor.score}/{factor.max}
                 </div>
               </div>

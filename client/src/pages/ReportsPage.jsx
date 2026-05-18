@@ -82,7 +82,7 @@ export default function ReportsPage() {
 
   return (
     <div className="animate-fade">
-      <div className="page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <div className="page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 16 }}>
         <div>
           <h1>Reports & Analytics</h1>
           <p>Detailed breakdown of your finances.</p>
@@ -97,7 +97,7 @@ export default function ReportsPage() {
           <h3 style={{ marginBottom: 20 }}>Expense Breakdown</h3>
           {summary?.categoryBreakdown?.length > 0 ? (
             <div style={{ height: 300, display: 'flex', justifyContent: 'center' }}>
-              <Doughnut data={doughnutData} options={{ plugins: { legend: { position: 'right', labels: { color: '#94a3b8' } } }, maintainAspectRatio: false }} />
+              <Doughnut data={doughnutData} options={{ plugins: { legend: { position: window.innerWidth < 600 ? 'bottom' : 'right', labels: { color: '#94a3b8', font: { size: 11 } } } }, maintainAspectRatio: false }} />
             </div>
           ) : (
             <p className="text-muted text-center" style={{ marginTop: 100 }}>No expenses to display.</p>

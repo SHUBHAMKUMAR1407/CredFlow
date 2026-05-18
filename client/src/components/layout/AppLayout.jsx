@@ -5,11 +5,16 @@ import Topbar from './Topbar';
 
 export default function AppLayout() {
   const [collapsed, setCollapsed] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+
   return (
     <div className="app-layout">
-      <Sidebar collapsed={collapsed} setCollapsed={setCollapsed} />
+      {mobileOpen && (
+        <div className="sidebar-mobile-overlay" onClick={() => setMobileOpen(false)} />
+      )}
+      <Sidebar collapsed={collapsed} setCollapsed={setCollapsed} mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />
       <main className={`app-main ${collapsed ? 'collapsed' : ''}`}>
-        <Topbar collapsed={collapsed} />
+        <Topbar collapsed={collapsed} setMobileOpen={setMobileOpen} />
         <div className="app-content">
           <Outlet />
         </div>

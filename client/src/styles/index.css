@@ -685,15 +685,13 @@ select.form-input {
 }
 
 @media (max-width: 900px) {
-
   .app-main,
   .app-main.collapsed {
     margin-left: 0;
   }
 
   .app-content {
-    padding: 16px;
-    padding-top: calc(var(--topbar-h) + 16px);
+    padding: 20px 16px;
   }
 
   .grid-4,
@@ -703,15 +701,40 @@ select.form-input {
 }
 
 @media (max-width: 600px) {
-
   .grid-4,
   .grid-3,
   .grid-2 {
     grid-template-columns: 1fr;
+    gap: 16px;
   }
 
   .app-content {
-    padding: 12px;
-    padding-top: calc(var(--topbar-h) + 12px);
+    padding: 16px 12px;
+  }
+}
+
+/* Table Responsive Wrapper */
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.table-responsive table {
+  width: 100%;
+  min-width: 550px;
+}
+
+/* Modal Responsive */
+@media (max-width: 600px) {
+  .modal-content {
+    width: 95% !important;
+    max-width: 95% !important;
+    padding: 24px 16px !important;
+    margin: 16px !important;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+  .modal-header h2 {
+    font-size: 1.25rem;
   }
 }

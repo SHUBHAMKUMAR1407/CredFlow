@@ -21,7 +21,7 @@ const navItems = [
   ]},
 ];
 
-export default function Sidebar({ collapsed, setCollapsed }) {
+export default function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobileOpen }) {
   const navigate = useNavigate();
   const location = useLocation();
   const { user, logout, isAdmin, updateUserData } = useAuth();
@@ -111,7 +111,7 @@ export default function Sidebar({ collapsed, setCollapsed }) {
 
   return (
     <>
-      <aside className={`sidebar ${collapsed ? 'collapsed' : ''}`}>
+      <aside className={`sidebar ${collapsed ? 'collapsed' : ''} ${mobileOpen ? 'mobile-open' : ''}`}>
         <div className="sidebar-header">
           <CreditCard size={24} style={{ color: '#818cf8', flexShrink: 0 }} />
           <span className="sidebar-logo">CredFlow</span>
@@ -125,7 +125,7 @@ export default function Sidebar({ collapsed, setCollapsed }) {
             <div className="nav-section" key={section.section}>
               <div className="nav-section-title">{section.section}</div>
               {section.items.map((item) => (
-                <button key={item.path} className={`nav-item ${location.pathname === item.path ? 'active' : ''}`} onClick={() => navigate(item.path)}>
+                <button key={item.path} className={`nav-item ${location.pathname === item.path ? 'active' : ''}`} onClick={() => { navigate(item.path); if (setMobileOpen) setMobileOpen(false); }}>
                   <item.icon className="nav-icon" size={20} />
                   <span className="nav-label">{item.label}</span>
                 </button>
@@ -165,9 +165,9 @@ export default function Sidebar({ collapsed, setCollapsed }) {
       {showProfile && (
         <div className="modal-overlay">
           <div className="modal-content animate-scale" style={{ maxWidth: 650, padding: 0, overflow: 'hidden' }}>
-            <div style={{ display: 'flex', height: '100%', minHeight: 500 }}>
+            <div className="profile-modal-container">
               {/* Modal Sidebar */}
-              <div style={{ width: 220, background: 'var(--bg-tertiary)', borderRight: '1px solid var(--border-glass)', padding: '24px 12px' }}>
+              <div className="profile-modal-sidebar">
                 <div style={{ padding: '0 12px 24px' }}>
                   <h2 style={{ fontSize: '1.25rem', fontWeight: 800 }}>Settings</h2>
                   <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: 4 }}>Manage your account</p>
@@ -197,8 +197,8 @@ export default function Sidebar({ collapsed, setCollapsed }) {
               </div>
 
               {/* Modal Main Content */}
-              <div style={{ flex: 1, padding: 32, display: 'flex', flexDirection: 'column' }}>
-                <div style={{ display: 'flex', justifyContent: 'flex-end', position: 'absolute', top: 20, right: 20 }}>
+              <div className="profile-modal-main">
+                <div style={{ display: 'flex', justifyContent: 'flex-end', position: 'absolute', top: 20, right: 20, zIndex: 10 }}>
                   <button className="modal-close" onClick={() => setShowProfile(false)}>×</button>
                 </div>
 

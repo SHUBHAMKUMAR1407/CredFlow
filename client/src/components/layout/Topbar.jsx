@@ -1,11 +1,11 @@
 import { useState } from 'react';
-import { Search, Bell, Sun, Moon, Trash2, X } from 'lucide-react';
+import { Search, Bell, Sun, Moon, Trash2, X, Menu } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
 import { useNotifications } from '../../context/NotificationContext';
 import { timeAgo } from '../../utils/dateHelpers';
 import { useNavigate } from 'react-router-dom';
 
-export default function Topbar({ collapsed }) {
+export default function Topbar({ collapsed, setMobileOpen }) {
   const { theme, toggleTheme } = useTheme();
   const { notifications, unreadCount, markAsRead, clearAll } = useNotifications();
   const [showNotifs, setShowNotifs] = useState(false);
@@ -22,6 +22,9 @@ export default function Topbar({ collapsed }) {
   return (
     <header className={`topbar ${collapsed ? 'collapsed' : ''}`}>
       <div className="topbar-left">
+        <button className="mobile-menu-btn" onClick={() => setMobileOpen(true)} title="Open Menu" style={{ padding: 8 }}>
+          <Menu size={20} />
+        </button>
         <div className="topbar-search">
           <Search size={16} style={{ color: 'var(--text-muted)', flexShrink: 0 }} />
           <input 
