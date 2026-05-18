@@ -35,7 +35,7 @@ export default function AdminSettings() {
             {theme === 'dark' ? <Moon size={20} color="var(--accent)" /> : <Sun size={20} color="var(--warning)" />}
             Appearance
           </h3>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 0', borderBottom: '1px solid var(--border-glass)' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 0', borderBottom: '1px solid var(--border-glass)', flexWrap: 'wrap', gap: 12 }}>
             <div>
               <div style={{ fontWeight: 600 }}>Theme Preference</div>
               <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>Toggle between light and dark mode</div>
@@ -53,15 +53,15 @@ export default function AdminSettings() {
             Security Overview
           </h3>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid var(--border-glass)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid var(--border-glass)', flexWrap: 'wrap', gap: 8 }}>
               <span style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>Admin Email</span>
-              <span style={{ fontWeight: 600, fontSize: '0.9rem' }}>{user?.email}</span>
+              <span style={{ fontWeight: 600, fontSize: '0.9rem', wordBreak: 'break-all' }}>{user?.email}</span>
             </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid var(--border-glass)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid var(--border-glass)', flexWrap: 'wrap', gap: 8 }}>
               <span style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>Access Level</span>
               <span className="badge badge-income">Super Admin</span>
             </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', flexWrap: 'wrap', gap: 8 }}>
               <span style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>Last Login</span>
               <span style={{ fontWeight: 600, fontSize: '0.9rem' }}>{new Date().toLocaleDateString()}</span>
             </div>
@@ -75,7 +75,7 @@ export default function AdminSettings() {
             Alerts & Notifications
           </h3>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 12px', background: 'var(--bg-glass)', borderRadius: 'var(--radius-sm)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 12px', background: 'var(--bg-glass)', borderRadius: 'var(--radius-sm)', flexWrap: 'wrap', gap: 10 }}>
               <div>
                 <div style={{ fontWeight: 600, fontSize: '0.9rem' }}>New User Registrations</div>
                 <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Get notified when a new user signs up</div>
@@ -87,7 +87,7 @@ export default function AdminSettings() {
                 style={{ width: 18, height: 18, cursor: 'pointer', accentColor: 'var(--accent)' }}
               />
             </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 12px', background: 'var(--bg-glass)', borderRadius: 'var(--radius-sm)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 12px', background: 'var(--bg-glass)', borderRadius: 'var(--radius-sm)', flexWrap: 'wrap', gap: 10 }}>
               <div>
                 <div style={{ fontWeight: 600, fontSize: '0.9rem' }}>Suspicious Activity Alerts</div>
                 <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Alerts for unusual transaction patterns</div>
