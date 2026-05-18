@@ -528,11 +528,12 @@
     width: 280px !important;
     transform: translateX(-100%);
     z-index: 1000;
-    box-shadow: 10px 0 30px rgba(0, 0, 0, 0.6);
+    box-shadow: none;
   }
 
   .sidebar.mobile-open {
     transform: translateX(0);
+    box-shadow: 10px 0 30px rgba(0, 0, 0, 0.6);
   }
 
   .mobile-menu-btn {
